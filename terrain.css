@@ -1,0 +1,41 @@
+.dimension-toggle{border-color:#65714b;background:#1a2114;gap:2px}
+.popup-height{font:9px Atlas,"Noto",sans-serif;color:#b2c69a;margin:9px 0 -3px}
+.map-viewport[data-dimension="3d"][data-tool="measure"] .terrain-tools,.map-viewport[data-dimension="3d"][data-tool="route"] .terrain-tools{display:none}
+.dimension-toggle button{font-family:Atlas,"Noto",sans-serif;letter-spacing:.35px;white-space:nowrap}
+.dimension-toggle button.active{background:#d5ed79;color:#202915;font-weight:700}
+.terrain-view{position:absolute;inset:0;z-index:0;background:#20281e}
+.terrain-view canvas{display:block;width:100%;height:100%;outline:none;touch-action:none}
+.map-viewport[data-dimension="3d"]{background:#20281e}
+.map-viewport[data-dimension="3d"] #map-world,.map-viewport[data-dimension="3d"] #map-loading,.map-viewport[data-dimension="3d"] #map-error{display:none}
+.map-viewport[data-dimension="3d"] .scale-bar{display:none}
+.map-viewport[data-dimension="3d"] .map-vignette{box-shadow:inset 0 0 120px #10160d20}
+.map-viewport[data-dimension="3d"] #minimap-rect{width:8px!important;height:8px!important;min-width:8px;min-height:8px;border-radius:50%;transform:translate(-50%,-50%);background:#d5ed79;box-shadow:0 0 0 5px #d5ed7935}
+.terrain-loading small{display:block;font-size:10px;color:#819170;margin-top:10px}
+.terrain-tools{position:absolute;left:25px;bottom:108px;z-index:6;width:216px;padding:12px 14px;border:1px solid #6c7e474d;border-radius:5px;background:#1c2418e8;box-shadow:0 8px 30px #10160d15;color:#b5c5a0;backdrop-filter:blur(10px)}
+.terrain-tools-heading{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:13px}
+.terrain-tools-heading>span{font:8px Atlas,"Noto",sans-serif;letter-spacing:.6px;color:#d0dfb7}
+.terrain-tools-heading .text-button{display:flex;align-items:center;gap:3px;font-size:9px}
+.terrain-tools-heading .icon{width:12px;height:12px;transform:rotate(-45deg)}
+.model-controls-heading{display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:9px;margin-bottom:9px}
+.model-controls-heading .text-button{font-size:9px;color:#d5ed79}
+.model-controls-heading .text-button:disabled{opacity:.4;cursor:default}
+.model-toggles{display:flex;align-items:center;gap:13px;font-size:9px}
+.model-toggles label{display:flex;align-items:center;gap:4px;cursor:pointer;white-space:nowrap}
+.model-toggles input{width:12px;height:12px;accent-color:#d5ed79;margin:0;cursor:pointer}
+.model-status{font:8px Atlas,"Noto",sans-serif;line-height:1.6;color:#a9bd8a;margin:10px 0 13px;min-height:13px}
+.model-status[data-state="loading"]{color:#d5ed79}
+.setting-row select{max-width:170px;min-width:0;background:#1c2418;color:#d5ed79;border:1px solid #4b5839;border-radius:3px;padding:6px;font-size:11px}
+.model-status[data-state="error"],.model-status[data-state="partial"]{color:#e3ba7b}
+#retry-models{font-size:9px;margin:-5px 0 12px;color:#e3ba7b}
+.height-note{font-size:8px;line-height:1.6;color:#819170;margin:-7px 0 11px}
+#height-factor:disabled{opacity:.35;cursor:not-allowed}
+.height-factor-label{display:flex;justify-content:space-between;align-items:center;font-size:9px;gap:7px}
+.height-factor-label output{color:#d5ed79;font-size:9px;font-family:Atlas,"Noto",sans-serif}
+#height-factor{width:100%;height:12px;accent-color:#d5ed79;margin:8px 0 10px;cursor:pointer}
+#terrain-elevation{font:9px Atlas,"Noto",sans-serif;color:#bac9a4;line-height:1.6;font-variant-numeric:tabular-nums}
+.terrain-gesture{font-size:8px;line-height:1.6;color:#879876;margin-top:7px}
+.terrain-scope{display:block;font-size:8px;color:#718163;margin-top:3px}
+.map-viewport[data-dimension="3d"] .compass{transition:none;transform-origin:50% 55%}
+@media(max-width:1100px){.map-toolbar-actions{gap:8px}.view-toggle button{padding:0 10px}.map-toolbar{padding-right:17px;padding-left:17px}.toolbar-divider{display:none}}
+@media(max-width:650px){.map-toolbar-actions{gap:6px}.map-toolbar-actions>.view-toggle:not(.dimension-toggle){display:none}.dimension-toggle button{padding:0 9px;font-size:10px}.map-title-en{display:none}.terrain-tools{left:14px;bottom:100px;width:187px;padding:10px 12px}.terrain-tools-heading{margin-bottom:10px}.terrain-gesture{font-size:8px}.terrain-loading{font-size:11px}.map-viewport[data-dimension="3d"] .map-bottom-left{bottom:22px}.map-viewport[data-dimension="3d"] .minimap{bottom:22px}}
+@media(max-height:620px){.terrain-tools{bottom:75px}.terrain-scope{display:none}}

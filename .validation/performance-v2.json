@@ -1,0 +1,15 @@
+[
+  {
+    "map": "zestafona",
+    "quality": "balanced",
+    "durationSeconds": 10.003999999997017,
+    "frames": 1322,
+    "fps": 132.1,
+    "p95FrameMs": 13.9,
+    "drawCalls": 667,
+    "triangles": 4416207,
+    "geometries": 1494,
+    "textures": 172,
+    "at": "2026-10-02T18:02:34.056Z"
+  }
+]

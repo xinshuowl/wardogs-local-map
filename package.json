@@ -1,0 +1,17 @@
+{
+  "name": "wardogs-local-map",
+  "version": "3.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "verify": "node --expose-gc scripts/verify_assets.mjs && node scripts/verify_replica.mjs && node scripts/verify_navigation_performance.mjs && node scripts/verify_model_loading.mjs && node scripts/verify_terrain_loading.mjs && node scripts/verify_ui_state.mjs && node scripts/verify_steam_players.mjs && node scripts/verify_lighting.mjs && node scripts/verify_model_surfaces.mjs",
+    "verify:replica": "node scripts/verify_replica.mjs",
+    "verify:navigation": "node scripts/verify_navigation_performance.mjs",
+    "verify:artillery": "node scripts/verify_artillery.mjs",
+    "verify:quick": "node --expose-gc scripts/verify_assets.mjs --quick",
+    "verify:updates": "python scripts/verify_updates.py",
+    "verify:players": "node scripts/verify_steam_players.mjs"
+  }
+}

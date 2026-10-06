@@ -1,0 +1,206 @@
+{
+  "at": "2026-10-03T18:08:40.477Z",
+  "task": "炮兵 Fly / Walk 游览卡顿根因修复",
+  "conditions": {
+    "map": "bakurani",
+    "engine": "three.js r180",
+    "quality": "balanced",
+    "weapon": "l52-cannon",
+    "gun": {
+      "x": 77.09,
+      "y": 69.95
+    },
+    "target": {
+      "x": 97.09,
+      "y": 69.95
+    },
+    "durationSeconds": 10,
+    "moving": true,
+    "allModels": true,
+    "shadows": true,
+    "collision": true,
+    "initialDrawCalls": 648,
+    "initialTriangles": 2751972,
+    "initialWalkFeet": -943.16
+  },
+  "baseline": {
+    "walk": {
+      "at": "2026-10-03T16:50:48.109Z",
+      "fps": 94.6,
+      "p95FrameMs": 20.8,
+      "p99FrameMs": 27.8,
+      "maxFrameMs": 34.8,
+      "stalledFrames": 0,
+      "frames": 946,
+      "durationSeconds": 10.004,
+      "drawCalls": 693,
+      "triangles": 2482947,
+      "cpuMs": {
+        "navigation": 3.975,
+        "cameraAndCollision": 0.062,
+        "terrainDetail": 0.015,
+        "models": 0.462,
+        "renderSubmission": 3.815,
+        "total": 8.344
+      },
+      "cpuMaxMs": {
+        "navigation": 10.8,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 0.2,
+        "models": 22.4,
+        "renderSubmission": 7.3,
+        "total": 33.1
+      }
+    },
+    "fly": {
+      "at": "2026-10-03T16:54:05.540Z",
+      "fps": 130.6,
+      "p95FrameMs": 13.8,
+      "p99FrameMs": 20.9,
+      "maxFrameMs": 97.2,
+      "stalledFrames": 3,
+      "frames": 1307,
+      "durationSeconds": 10.0043,
+      "drawCalls": 578,
+      "triangles": 2031401,
+      "cpuMs": {
+        "navigation": 0.031,
+        "cameraAndCollision": 0.317,
+        "terrainDetail": 0.13,
+        "models": 0.546,
+        "renderSubmission": 3.534,
+        "total": 4.575
+      },
+      "cpuMaxMs": {
+        "navigation": 0.2,
+        "cameraAndCollision": 1,
+        "terrainDetail": 65.2,
+        "models": 16.4,
+        "renderSubmission": 17.2,
+        "total": 70.4
+      }
+    }
+  },
+  "optimized": {
+    "walk": {
+      "at": "2026-10-03T18:05:37.399Z",
+      "fps": 141.7,
+      "p95FrameMs": 7.1,
+      "p99FrameMs": 13.8,
+      "maxFrameMs": 20.9,
+      "stalledFrames": 0,
+      "frames": 1417,
+      "durationSeconds": 10.002,
+      "drawCalls": 693,
+      "triangles": 2482903,
+      "cpuMs": {
+        "navigation": 0.226,
+        "cameraAndCollision": 0.037,
+        "terrainDetail": 0.007,
+        "models": 0.281,
+        "renderSubmission": 2.937,
+        "total": 3.498
+      },
+      "cpuMaxMs": {
+        "navigation": 1.8,
+        "cameraAndCollision": 0.2,
+        "terrainDetail": 0.1,
+        "models": 15.7,
+        "renderSubmission": 8.2,
+        "total": 23.1
+      }
+    },
+    "fly": {
+      "at": "2026-10-03T18:08:40.477Z",
+      "fps": 137,
+      "p95FrameMs": 7.1,
+      "p99FrameMs": 20.8,
+      "maxFrameMs": 41.6,
+      "stalledFrames": 0,
+      "frames": 1370,
+      "durationSeconds": 10.002,
+      "drawCalls": 631,
+      "triangles": 2353867,
+      "cpuMs": {
+        "navigation": 0.02,
+        "cameraAndCollision": 0.051,
+        "terrainDetail": 0.03,
+        "models": 0.564,
+        "renderSubmission": 3.184,
+        "total": 3.859
+      },
+      "cpuMaxMs": {
+        "navigation": 0.2,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 13.7,
+        "models": 17.1,
+        "renderSubmission": 17.1,
+        "total": 27.7
+      }
+    }
+  },
+  "intermediateWalkBeforeSourceIndex": [
+    {
+      "fps": 121.8,
+      "p95FrameMs": 13.9,
+      "maxFrameMs": 27.9,
+      "navigationCpuMs": 3.127
+    },
+    {
+      "fps": 110.5,
+      "p95FrameMs": 14,
+      "maxFrameMs": 27.8,
+      "navigationCpuMs": 3.618
+    }
+  ],
+  "sourceCollision": {
+    "loadedInstances": 23863,
+    "lastQueryCandidates": 1956,
+    "cellMetres": 64
+  },
+  "validation": {
+    "fullVerify": "passed",
+    "syntax": {
+      "files": 26,
+      "status": "passed"
+    },
+    "sourceObbIndex": "2501 instances: equivalent old-radius results, less than 80 query candidates",
+    "meshIndex": "1 candidate out of 2500 meshes, same exact raycast hit",
+    "walkingBounds": "120 rotated/mirrored OBB cases equal original narrow phase",
+    "terrain": "tile boundaries, bilinear heights and triangle/hole topology passed",
+    "instanceReuse": "matrix/color buffers and collider identity reused, newly loaded LOD material initialized",
+    "artillery": "24 cannon fixtures and 17 mortar rows passed",
+    "assets": "all three maps, 318 GLBs and 1057 scene SHA-256 resources passed",
+    "jump": {
+      "airborneFeet": -942.69,
+      "airborneGrounded": false,
+      "landedFeet": -943.16,
+      "landedGrounded": true
+    },
+    "escape": "returns to Orbit",
+    "browserErrorsSinceFinalReload": 0,
+    "mobile": {
+      "width": 390,
+      "height": 844,
+      "scrollWidth": 390,
+      "hudLeft": 15,
+      "hudRight": 375,
+      "touchControlsVisible": true
+    },
+    "production": {
+      "port": 4173,
+      "health": "passed",
+      "etag304": "passed",
+      "lastModified304": "passed",
+      "privateDirectory403": "passed",
+      "userFixtureImported": false
+    }
+  },
+  "limits": [
+    "Single 10-second samples on this machine; not a multi-device or multi-run statistical guarantee.",
+    "Same starting view and quality, not a pixel-identical replay: geometry streaming and residency differ during movement. The final fly sample ends with more triangles than the baseline; no models were disabled to improve results.",
+    "CPU renderSubmission measures command submission, not GPU execution time.",
+    "First entry and newly visited terrain may still require model/texture decoding, uploads and shader compilation.",
+    "stalledFrames counts frame intervals strictly greater than 50 ms. Dates are UTC ISO timestamps."
+  ]
+}

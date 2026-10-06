@@ -1,0 +1,86 @@
+{
+  "date": "2026-10-04",
+  "testOrigin": "http://127.0.0.1:43819",
+  "productionOrigin": "http://127.0.0.1:4173",
+  "viewport": { "width": 1280, "height": 720 },
+  "responsiveViewports": [
+    { "width": 768, "height": 1024 },
+    { "width": 390, "height": 844, "bodyScrollWidth": 390 }
+  ],
+  "mapSnapshots": [
+    { "map": "zestafona", "models": "ready", "sceneInstances": 30187 },
+    { "map": "ozeti", "models": "ready", "sceneInstances": 31448 },
+    { "map": "bakurani", "models": "ready", "sceneInstances": 38626, "preload": "ready", "preloadCompleted": 1143, "preloadTotal": 1143, "tiles": 683, "pending": 0, "textureUploads": 0, "shaderWarmups": 0 }
+  ],
+  "residencyChecks": [
+    { "operation": "quality-low", "map": "zestafona", "before": 30187, "after": 30187, "tilesBefore": 28, "tilesAfter": 28 },
+    { "operation": "quality-high", "map": "zestafona", "before": 30187, "after": 40608, "tilesBefore": 28, "tilesAfter": 28 },
+    { "operation": "2d-to-3d", "map": "zestafona", "before": 40608, "after": 40608, "tilesBefore": 28, "tilesAfter": 28 },
+    { "operation": "walk", "map": "bakurani", "before": 38626, "after": 39822, "tilesBefore": 683, "tilesAfter": 683 },
+    { "operation": "fly", "map": "bakurani", "before": 39822, "after": 42996, "tilesBefore": 683, "tilesAfter": 683 },
+    { "operation": "orbit-rotation", "map": "bakurani", "before": 48607, "after": 52591 }
+  ],
+  "navigationReports": [
+    {
+      "map": "bakurani",
+      "mode": "walk",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": { "navigation": 0.528, "cameraAndCollision": 0.061, "terrainDetail": 0.01, "models": 2.945, "renderSubmission": 13.416, "total": 16.987 },
+      "cpuMaxMs": { "navigation": 1.8, "cameraAndCollision": 0.3, "terrainDetail": 0.1, "models": 6.7, "renderSubmission": 27.1, "total": 31.2 },
+      "p99FrameMs": 34.7,
+      "maxFrameMs": 36.2,
+      "stalledFrames": 0,
+      "durationSeconds": 10.006899999999266,
+      "frames": 546,
+      "fps": 54.6,
+      "p95FrameMs": 27.8,
+      "drawCalls": 559,
+      "triangles": 3443526,
+      "geometries": 1064,
+      "textures": 3094,
+      "at": "2026-10-04T10:12:57.088Z"
+    },
+    {
+      "map": "bakurani",
+      "mode": "fly",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": { "navigation": 0.024, "cameraAndCollision": 0.156, "terrainDetail": 0.04, "models": 2.961, "renderSubmission": 12.847, "total": 16.053 },
+      "cpuMaxMs": { "navigation": 0.2, "cameraAndCollision": 1, "terrainDetail": 2.1, "models": 3.8, "renderSubmission": 28.2, "total": 33.4 },
+      "p99FrameMs": 34.7,
+      "maxFrameMs": 62.5,
+      "stalledFrames": 1,
+      "durationSeconds": 10.023599999998522,
+      "frames": 589,
+      "fps": 58.8,
+      "p95FrameMs": 27.8,
+      "drawCalls": 472,
+      "triangles": 3145093,
+      "geometries": 1121,
+      "textures": 3262,
+      "at": "2026-10-04T10:14:13.550Z"
+    }
+  ],
+  "consoleWarningsAndErrorsAfterFinalReload": [],
+  "verification": {
+    "npm run verify": { "exitCode": 0, "elapsedSeconds": 8.2226702, "terrainChecks": 16, "uiTests": 22 },
+    "npm run verify:updates": { "exitCode": 0, "tests": 5 }
+  },
+  "productionDataChecked": {
+    "map": "bakurani",
+    "weapon": "l52-cannon",
+    "gun": [77.08999633789062, 69.94999694824219],
+    "target": [97.08999633789062, 69.94999694824219],
+    "savedPresets": ["东向 2000m · 加农炮", "东向 340m · 迫击炮"],
+    "personalMarkers": 0
+  },
+  "cleanup": { "testTabClosed": true, "testServerStopped": true, "viewportReset": true, "productionServerKeptRunning": true },
+  "activation": { "frontendReloaded": true, "serverPathProtectionRequiresNextRestart": true },
+  "notes": [
+    "Navigation reports preserve headline and CPU metrics; per-frame longFrames arrays are omitted.",
+    "Scene instance counts differ from resident GPU slots and current-frame triangles.",
+    "No controlled before-and-after FPS comparison; scene content differs from older validation runs.",
+    "Both navigation runs retain previously seen model instances; one fly frame still exceeds 50 ms."
+  ]
+}

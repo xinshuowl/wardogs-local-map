@@ -1,0 +1,290 @@
+{
+  "source": "https://metaforge.app/wardogs/map/bakurani/3d",
+  "checkedAt": "2026-10-03",
+  "method": "Captured from the reference site public numerical solver; 2000 m / 3.2 m was independently checked in its visible UI.",
+  "cannon": [
+    {
+      "range": 323,
+      "startingHeight": 3.2,
+      "shots": []
+    },
+    {
+      "range": 600,
+      "startingHeight": 3.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 20.520578358858785,
+          "time": 2.42
+        }
+      ]
+    },
+    {
+      "range": 700,
+      "startingHeight": 3.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 30.63467218811518,
+          "time": 2.9
+        }
+      ]
+    },
+    {
+      "range": 1000,
+      "startingHeight": 3.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 64.54663385091604,
+          "time": 4.5200000000000005
+        },
+        {
+          "arc": "high",
+          "mils": 1337.8073730874153,
+          "time": 36.6
+        }
+      ]
+    },
+    {
+      "range": 1500,
+      "startingHeight": 3.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 138.32002413490386,
+          "time": 7.8
+        },
+        {
+          "arc": "high",
+          "mils": 1209.6585714914388,
+          "time": 35.34
+        }
+      ]
+    },
+    {
+      "range": 2000,
+      "startingHeight": 3.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 250.0212662786032,
+          "time": 12.200000000000001
+        },
+        {
+          "arc": "high",
+          "mils": 1050.0841460092245,
+          "time": 33.08
+        }
+      ]
+    },
+    {
+      "range": 2500,
+      "startingHeight": 3.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 475.506064001437,
+          "time": 19.7
+        },
+        {
+          "arc": "high",
+          "mils": 784.1894960017141,
+          "time": 27.830000000000002
+        }
+      ]
+    },
+    {
+      "range": 2600,
+      "startingHeight": 3.2,
+      "shots": []
+    },
+    {
+      "range": 323,
+      "startingHeight": -17.8,
+      "shots": []
+    },
+    {
+      "range": 600,
+      "startingHeight": -17.8,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 55.65410490232206,
+          "time": 2.42
+        }
+      ]
+    },
+    {
+      "range": 700,
+      "startingHeight": -17.8,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 60.71564797822582,
+          "time": 2.9
+        }
+      ]
+    },
+    {
+      "range": 1000,
+      "startingHeight": -17.8,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 85.42788770175592,
+          "time": 4.51
+        },
+        {
+          "arc": "high",
+          "mils": 1337.2869429743064,
+          "time": 36.43
+        }
+      ]
+    },
+    {
+      "range": 1500,
+      "startingHeight": -17.8,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 152.71663682847645,
+          "time": 7.8100000000000005
+        },
+        {
+          "arc": "high",
+          "mils": 1208.8521065468726,
+          "time": 35.17
+        }
+      ]
+    },
+    {
+      "range": 2000,
+      "startingHeight": -17.8,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 261.68868187440444,
+          "time": 12.25
+        },
+        {
+          "arc": "high",
+          "mils": 1048.261549725455,
+          "time": 32.88
+        }
+      ]
+    },
+    {
+      "range": 2500,
+      "startingHeight": -17.8,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 491.54228508603387,
+          "time": 19.92
+        },
+        {
+          "arc": "high",
+          "mils": 775.5960843963509,
+          "time": 27.44
+        }
+      ]
+    },
+    {
+      "range": 2600,
+      "startingHeight": -17.8,
+      "shots": []
+    },
+    {
+      "range": 323,
+      "startingHeight": 53.2,
+      "shots": []
+    },
+    {
+      "range": 600,
+      "startingHeight": 53.2,
+      "shots": []
+    },
+    {
+      "range": 700,
+      "startingHeight": 53.2,
+      "shots": []
+    },
+    {
+      "range": 1000,
+      "startingHeight": 53.2,
+      "shots": [
+        {
+          "arc": "high",
+          "mils": 1338.8995864209478,
+          "time": 36.99
+        }
+      ]
+    },
+    {
+      "range": 1500,
+      "startingHeight": 53.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 103.926482941237,
+          "time": 7.75
+        },
+        {
+          "arc": "high",
+          "mils": 1211.9028084324627,
+          "time": 35.76
+        }
+      ]
+    },
+    {
+      "range": 2000,
+      "startingHeight": 53.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 222.30852283760584,
+          "time": 12.1
+        },
+        {
+          "arc": "high",
+          "mils": 1054.2119451295403,
+          "time": 33.55
+        }
+      ]
+    },
+    {
+      "range": 2500,
+      "startingHeight": 53.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 439.9225667647545,
+          "time": 19.23
+        },
+        {
+          "arc": "high",
+          "mils": 801.3694173518617,
+          "time": 28.67
+        }
+      ]
+    },
+    {
+      "range": 2600,
+      "startingHeight": 53.2,
+      "shots": [
+        {
+          "arc": "low",
+          "mils": 556.708770338991,
+          "time": 22.580000000000002
+        },
+        {
+          "arc": "high",
+          "mils": 678.5930760941118,
+          "time": 25.77
+        }
+      ]
+    }
+  ]
+}
+

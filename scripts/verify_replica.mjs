@@ -1,0 +1,116 @@
+import assert from 'node:assert/strict';
+import { readFile, stat, mkdtemp, rm } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { createServer } from 'node:http';
+import { tmpdir } from 'node:os';
+import { resolve, join, sep } from 'node:path';
+import { MapCollision, segmentBoxHit, inverseInstancePoint, trajectoryObstruction } from '../map-collision.js';
+import { solveWeapon, createTrajectory, gameToMap, sampleTerrainHeight } from '../artillery-ballistics.js';
+import { TacticalDrawing, validShape, shapeVertices } from '../tactical-drawing.js';
+import { MapWorkspace, validBackupPreferences, validateWorkspace, encodeShare, decodeShare } from '../map-workspace.js';
+import { DetailHeightStore } from '../terrain-height-detail.js';
+import { createRoomHandler } from '../local-rooms.mjs';
+
+const root = resolve(import.meta.dirname, '..');
+const maps = JSON.parse((await readFile(join(root, 'map-data.js'), 'utf8')).replace(/^window.WARDOGS_MAPS = /, '').trim().replace(/;$/, ''));
+const map = maps.bakurani;
+const temporary = await mkdtemp(join(tmpdir(), 'wardogs-replica-test-'));
+const handleRoom = createRoomHandler(temporary);
+const server = createServer(async (request, response) => {
+  try {
+    const pathname = new URL(request.url, 'http://localhost').pathname;
+    if (await handleRoom(request, response, pathname)) return;
+    const filename = resolve(root, '.' + pathname); if (!filename.startsWith(root + sep)) { response.writeHead(403).end(); return; }
+    response.end(await readFile(filename));
+  } catch { response.writeHead(404).end(); }
+});
+await new Promise(resolveReady => server.listen(0, '127.0.0.1', resolveReady));
+const base = 'http://127.0.0.1:' + server.address().port;
+const originalFetch = globalThis.fetch;
+globalThis.fetch = (url, options) => originalFetch(new URL(url, base), options);
+try {
+  assert.equal(segmentBoxHit([-2, 0, 0], [2, 0, 0], [-1, -1, -1, 1, 1, 1]), .25);
+  assert.equal(segmentBoxHit([-2, 2, 0], [2, 2, 0], [-1, -1, -1, 1, 1, 1]), null);
+  const rotated = inverseInstancePoint([0, 2, 0], { position: [0, 0, 0], scale: [2, 1, 1], quaternion: [0, 0, Math.SQRT1_2, Math.SQRT1_2] });
+  assert.ok(Math.abs(rotated[0] - 1) < 1e-9 && Math.abs(rotated[1]) < 1e-9);
+  const obstruction = trajectoryObstruction([[0, 2, 0], [5, 2, 0], [10, 2, 0]], [{ position: [5, 0, 0], scale: [1, 1, 1], quaternion: [0, 0, 0, 1], bounds: [-1, 0, -1, 1, 4, 1], radius: 5, name: 'wall' }], () => 0);
+  assert.equal(obstruction.reason, 'object'); assert.equal(obstruction.point[0], 4);
+  assert.equal(trajectoryObstruction([[0, 5, 0], [5, -1, 0], [10, 0, 0]], [], () => 0).reason, 'terrain');
+  const scene = JSON.parse(await readFile(join(root, 'assets/scene-manifest.json'), 'utf8'));
+  assert.equal(scene.bakurani.detail.sampleMetres, 2); assert.equal(scene.bakurani.detail.count, 1024);
+  assert.equal(scene.ozeti.detail, null); assert.equal(scene.zestafona.detail, null);
+  let assets = 0;
+  for (const record of Object.values(scene)) for (const [filename, expected] of Object.entries(record.files)) {
+    const data = await readFile(join(root, filename)); assert.equal(data.length, expected.bytes, filename); assert.equal(createHash('sha256').update(data).digest('hex'), expected.sha256, filename); assets++;
+  }
+  const detail = new DetailHeightStore();
+  const gun = gameToMap(map, { x: 77.09, y: 69.95 }); const target = gameToMap(map, { x: 83.28, y: 72.57 });
+  await detail.ensure(map, [gun, target]);
+  assert.ok(Number.isFinite(detail.sample(map, gun))); assert.ok(Number.isFinite(detail.sample(map, target)));
+  assert.equal(detail.sample(maps.ozeti, gun), null);
+  const originHeight = detail.sample(map, gun); const targetHeight = detail.sample(map, target);
+  const range = Math.hypot(619, 262); const shot = solveWeapon('l52-cannon', range).selected;
+  assert.equal(Math.round(shot.mils), 28); assert.equal(shot.time.toFixed(1), '2.8');
+  const path = createTrajectory('l52-cannon', shot, gun, target, originHeight, targetHeight);
+  const apex = Math.max(...path.map((point, index) => point[2] - originHeight - (targetHeight - originHeight) * index / (path.length - 1)));
+  assert.equal(Math.round(apex), 22);
+  const native = JSON.parse(await readFile(join(root, 'assets/terrain/manifest.json'), 'utf8'));
+  const buffer = await readFile(join(root, native.bakurani.file)); const heights = new Uint16Array(buffer.buffer.slice(buffer.byteOffset, buffer.byteOffset + buffer.byteLength));
+  const heightAt = point => detail.sample(map, point) ?? sampleTerrainHeight(map, native.bakurani, heights, point);
+  await detail.ensure(map, path);
+  const collisions = await new MapCollision().check(map, [{ arc: 'low', points: path }], heightAt);
+  assert.equal(collisions.low.blocked, true); assert.equal(collisions.low.reason, 'object'); assert.ok(collisions.low.point.every(Number.isFinite));
+  const shape = { id: 'shape-test-1', mapId: 'bakurani', type: 'line', color: '#d5ed79', width: 3, points: [[100, 200], [300, 400]], text: '' };
+  assert.ok(validShape(shape)); assert.equal(shapeVertices({ ...shape, type: 'rectangle' }).length, 5); assert.equal(shapeVertices({ ...shape, type: 'circle' }).length, 73);
+  assert.ok(!validShape({ ...shape, points: [[Infinity, 1]] })); assert.ok(!validShape({ ...shape, color: 'url(javascript:alert(1))' }));
+  const workspace = { shapes: [shape], found: ['bakurani:tower-1'], hidden: [], presets: [{ id: 'filter-test', name: '补给预设', layers: { towers: true } }], markerSize: 1.2, hideFound: true };
+  assert.ok(validateWorkspace(workspace)); assert.ok(!validateWorkspace({ ...workspace, shapes: [{ ...shape, width: -1 }] }));
+  const drawing = Object.create(TacticalDrawing.prototype);
+  let drawingSaves = 0;
+  drawing.workspace = { record: { shapes: [JSON.parse(JSON.stringify(shape))] }, save() { drawingSaves++; } };
+  drawing.callbacks = { map: () => map, state: () => ({ tool: 'drawing' }), project: point => point, mapPosition: (horizontal, vertical) => [horizontal, vertical], viewport: { getBoundingClientRect: () => ({ left: 0, top: 0 }), setPointerCapture() {}, hasPointerCapture: () => false }, notify() {} };
+  drawing.mode = 'move'; drawing.svg = { innerHTML: '' }; drawing.toolbar = {}; drawing.updateControls = () => {}; drawing.resetHistory();
+  const pointer = (name, position) => drawing.pointer(name, { target: { closest: () => null }, button: 0, pointerId: 7, clientX: position[0], clientY: position[1], stopImmediatePropagation() {} });
+  pointer('pointerdown', [200, 300]); pointer('pointermove', [220, 310]); pointer('pointerup', [220, 310]);
+  assert.deepEqual(drawing.workspace.record.shapes[0].points, [[120, 210], [320, 410]]); assert.equal(drawingSaves, 1);
+  pointer('pointerdown', [120, 210]); pointer('pointermove', [130, 200]); pointer('pointerup', [130, 200]);
+  assert.deepEqual(drawing.workspace.record.shapes[0].points[0], [130, 200]);
+  drawing.undo(); assert.deepEqual(drawing.workspace.record.shapes[0].points[0], [120, 210]); drawing.redo(); assert.deepEqual(drawing.workspace.record.shapes[0].points[0], [130, 200]);
+  pointer('pointerdown', [225, 305]); pointer('pointermove', [2040, 2040]); pointer('pointerup', [2040, 2040]);
+  assert.ok(validShape(drawing.workspace.record.shapes[0]), 'Whole-shape movement stays inside the map');
+  const beforeCancel = JSON.stringify(drawing.workspace.record.shapes);
+  pointer('pointerdown', [2000, 2000]); pointer('pointermove', [1800, 1800]); pointer('pointercancel', [1800, 1800]);
+  assert.equal(JSON.stringify(drawing.workspace.record.shapes), beforeCancel, 'Pointer cancellation restores the original shape');
+  drawing.workspace.record.shapes = [JSON.parse(JSON.stringify(shape))]; drawing.selected = null; drawing.resetHistory(); drawing.mode = 'erase';
+  pointer('pointerdown', [200, 300]); pointer('pointerup', [200, 300]); assert.equal(drawing.workspace.record.shapes.length, 0);
+  drawing.undo(); assert.equal(drawing.workspace.record.shapes.length, 1, 'Erase can be undone');
+  const preferences = { layers: { towers: true }, settings: { brightness: 85, view: 'satellite', quality: 'high', models: { buildings: true, trees: false, props: false }, shadows: false, collision: true }, viewState: { mapId: 'ozeti', dimension: '3d', heightFactor: 1, faction: 2, control: 1 } };
+  assert.ok(validBackupPreferences(preferences)); assert.ok(validBackupPreferences({}));
+  for (const invalid of [{ ...preferences, settings: { brightness: Infinity } }, { ...preferences, settings: { models: { buildings: 'yes' } } }, { ...preferences, viewState: { ...preferences.viewState, mapId: 'invalid' } }, { ...preferences, viewState: { ...preferences.viewState, faction: 4 } }]) assert.ok(!validBackupPreferences(invalid));
+  const importer = Object.create(MapWorkspace.prototype);
+  const preset = { id: 'preset-test', name: '阵地预设', weapon: 'l52-cannon', arc: 'high', arcPinned: true, points: [gun, target], overrides: [null, null] };
+  importer.artilleryBackup = () => ({ bakurani: { ...preset, presets: [preset] } });
+  const mergedPreset = { ...preset, name: '更新名称' };
+  assert.equal(importer.prepareArtilleryImport({ bakurani: { ...preset, presets: [mergedPreset] } }).bakurani.presets[0].name, '更新名称');
+  importer.artilleryBackup = () => ({ bakurani: { ...preset, presets: Array.from({ length: 100 }, (_, index) => ({ ...preset, id: 'preset-' + index })) } });
+  assert.throws(() => importer.prepareArtilleryImport({ bakurani: { ...preset, presets: [preset] } }), /100/);
+  const shared = { map: 'bakurani', dimension: '2d', layers: { towers: true, settlements: false }, settings: { grid: true }, faction: 2, control: 0, shapes: [shape], artillery: { weapon: 'l52-cannon', arc: 'low', points: [gun, target], overrides: [null, null], correction: { add: 25, right: -10 } }, label: '战术分享 · 中文' };
+  assert.deepEqual(decodeShare(encodeShare(shared)), shared);
+  assert.throws(() => decodeShare(encodeShare({ ...shared, artillery: { ...shared.artillery, overrides: [9999999, null] } })));
+  assert.throws(() => decodeShare(encodeShare({ ...shared, faction: 99 })));
+  const initial = await (await fetch('/api/local/rooms/test-room')).json(); assert.equal(initial.revision, 0);
+  const stream = await fetch('/api/local/rooms/test-room/events'); const reader = stream.body.getReader(); const firstEvent = new TextDecoder().decode((await reader.read()).value); assert.ok(firstEvent.includes('event: state'));
+  const update = await fetch('/api/local/rooms/test-room', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ revision: 0, client: 'client-test', shapes: [shape] }) }); assert.equal(update.status, 200);
+  assert.equal((await update.json()).revision, 1);
+  const nextEvent = new TextDecoder().decode((await reader.read()).value); assert.ok(nextEvent.includes('shape-test-1')); await reader.cancel();
+  const conflict = await fetch('/api/local/rooms/test-room', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ revision: 0, client: 'client-test', shapes: [] }) }); assert.equal(conflict.status, 409);
+  const invalid = await fetch('/api/local/rooms/test-room', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ revision: 1, client: 'client-test', shapes: [{ ...shape, width: 999 }] }) }); assert.equal(invalid.status, 400);
+  const crossOrigin = await fetch('/api/local/rooms/test-room', { method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'https://example.invalid' }, body: '{}' }); assert.equal(crossOrigin.status, 403);
+  assert.equal(JSON.parse(await readFile(join(temporary, '.local-data/rooms/test-room.json'), 'utf8')).shapes.length, 1);
+  console.log('PASS: ' + assets + ' scene assets / SHA-256, 2m height streaming, 672m structure collision + 22m apex, OBB transforms, shape validation, Chinese share round-trip, SSE updates, conflict protection and persisted rooms');
+} finally {
+  globalThis.fetch = originalFetch;
+  server.closeAllConnections(); await new Promise(resolveClosed => server.close(resolveClosed));
+  if (!resolve(temporary).startsWith(resolve(tmpdir()) + sep) || !temporary.includes('wardogs-replica-test-')) throw new Error('Unsafe test cleanup path');
+  await rm(temporary, { recursive: true });
+}

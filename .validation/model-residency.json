@@ -1,0 +1,301 @@
+{
+  "recordedAt": "2026-10-04T06:54:18.363Z",
+  "task": "Stable model visibility during Fly / Walk and optional whole-map resource preloading",
+  "status": "validated-with-notes",
+  "cleanup": { "qaPort": 4181, "qaPid": 35524, "qaStopped": true, "productionPort": 4173, "productionPid": 30084, "productionHealth": "passed", "deliverableMode": "walk", "deliverablePreload": "ready" },
+  "reference": {
+    "page": "https://metaforge.app/wardogs/map/bakurani/3d",
+    "publicClient": "https://metaforge.app/_app/immutable/nodes/290.ZXvwAz9O.js",
+    "inspectedClientBytes": 157776,
+    "method": "Opened the live reference 3D map and Fly controls, read the modulepreload URL from DOM, and fetched the public client read-only. The relevant functions match .reference/3d-route.js.",
+    "observedStrategies": [
+      "Nearby tile loading with a wider retention boundary",
+      "Frustum and screen-pixel culling",
+      "Near/far geometry proxies",
+      "Nearest-first rebuilds with time/upload budgets",
+      "Resource warming with bounded concurrency"
+    ],
+    "sameRouteFpsComparisonPerformed": false
+  },
+  "causes": [
+    "Navigation syncTarget uses a 12-game-metre look target; using Orbit target distance accidentally restricted buildings/trees/props to 420/180/90m in balanced mode.",
+    "Strict frustum selection plus delayed selection/loading causes newly revealed geometry to pop in when turning.",
+    "Finer LOD triangles can exhaust the budget and displace other coarse outlines.",
+    "Switching to a fine LOD before all its materials are visible can temporarily remove mesh parts.",
+    "Limited tile residency evicts previously visited tiles and requires reading/decoding them again."
+  ],
+  "changes": [
+    "Navigation selection is centred on the camera with fixed profile-based ranges; balanced ranges are 1200/550/280m.",
+    "Expanded selection frustum and all-direction retention for models within 60m.",
+    "LOD hysteresis and coarse-outline-first triangle reservation before detail upgrades.",
+    "Fine LOD replacement requires every detail material to be visible.",
+    "Optional persistent whole-map preload loads all position tiles, available LOD bundles, and model textures, with at most two background tasks per batch and frame yields.",
+    "Preload reuses pending jobs, does not evict tiles, tracks real progress/failures, and supports cancellation and map generation invalidation.",
+    "Preferences, import/export validation, default settings, desktop settings, and Fly/Walk HUD include the stream/preload option."
+  ],
+  "bakuraniManifest": {
+    "version": "8c39bd9d",
+    "partInstances": 1197478,
+    "tiles": 683,
+    "bundles": 39,
+    "availableLodBundleFiles": 117,
+    "uniqueModelTextureFiles": 343,
+    "preloadTasks": 1143,
+    "bytes": {
+      "positions": 52990708,
+      "lod0": 84639828,
+      "lod1": 58910912,
+      "lod2": 45629944,
+      "textures": 17419382,
+      "estimatedBaseRgbaPixels": 336330752
+    },
+    "memoryNote": "Base RGBA estimate only, derived from image dimensions. Not a browser/GPU memory measurement; excludes mipmaps, geometry, matrices, variants and GPU copies."
+  },
+  "finalPreload": {
+    "origin": "http://127.0.0.1:4173",
+    "reloadAt": "2026-10-04T06:38:17.178Z",
+    "state": "ready",
+    "completed": 1143,
+    "total": 1143,
+    "tiles": 683,
+    "pending": 0,
+    "modelMeshCacheEntries": 6174,
+    "modelTextureCacheEntries": 1306,
+    "cacheCountNote": "Mesh entries include LOD variants; texture entries include colour-space/material variants, not additional unique files.",
+    "balancedWalkStart": {
+      "modelInstances": 8613,
+      "buildings": 6857,
+      "trees": 470,
+      "props": 1286,
+      "candidates": 20353,
+      "deferred": 11740,
+      "lod1": 4159,
+      "lod2": 4454,
+      "drawCalls": 1080,
+      "triangles": 3569127,
+      "collisionMeshes": 8225,
+      "feet": -943.16,
+      "grounded": true
+    },
+    "afterCameraTurn": {
+      "state": "ready",
+      "tiles": 683,
+      "pending": 0,
+      "modelInstances": 9191,
+      "buildings": 7450,
+      "trees": 455,
+      "props": 1286
+    }
+  },
+  "benchmarks": [
+    {
+      "note": "First expanded-coverage preload walk measurement, before the final every-material readiness condition. All materials were already loaded for this measurement.",
+      "at": "2026-10-04T06:34:47.434Z",
+      "map": "bakurani",
+      "mode": "walk",
+      "moving": true,
+      "quality": "balanced",
+      "durationSeconds": 10.004700000000012,
+      "frames": 1087,
+      "fps": 108.6,
+      "p95FrameMs": 14,
+      "p99FrameMs": 48.6,
+      "maxFrameMs": 48.7,
+      "stalledFrames": 0,
+      "cpuMs": {
+        "navigation": 0.342,
+        "cameraAndCollision": 0.051,
+        "terrainDetail": 0.007,
+        "models": 1.33,
+        "renderSubmission": 6.699,
+        "total": 8.446
+      },
+      "cpuMaxMs": {
+        "navigation": 5.9,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 0.1,
+        "models": 41.4,
+        "renderSubmission": 14,
+        "total": 51.5
+      },
+      "drawCalls": 1117,
+      "triangles": 3548468,
+      "geometries": 1652,
+      "textures": 222
+    },
+    {
+      "note": "Final source, full preload completed, 10-second forward/return walk from the existing gun position.",
+      "map": "bakurani",
+      "mode": "walk",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.254,
+        "cameraAndCollision": 0.045,
+        "terrainDetail": 0.005,
+        "models": 0.744,
+        "renderSubmission": 4.109,
+        "total": 5.17
+      },
+      "cpuMaxMs": {
+        "navigation": 2.2,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 0.1,
+        "models": 35.1,
+        "renderSubmission": 8.8,
+        "total": 44.4
+      },
+      "p99FrameMs": 27.8,
+      "maxFrameMs": 41.7,
+      "stalledFrames": 0,
+      "durationSeconds": 10.000299999999639,
+      "frames": 1313,
+      "fps": 131.3,
+      "p95FrameMs": 7.1,
+      "drawCalls": 1117,
+      "triangles": 3548468,
+      "geometries": 1419,
+      "textures": 222,
+      "at": "2026-10-04T06:45:54.300Z"
+    },
+    {
+      "note": "Final source, full preload completed, 10-second forward/return fly after entering Walk at the same gun position.",
+      "map": "bakurani",
+      "mode": "fly",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.023,
+        "cameraAndCollision": 0.069,
+        "terrainDetail": 0.039,
+        "models": 1.442,
+        "renderSubmission": 4.323,
+        "total": 5.911
+      },
+      "cpuMaxMs": {
+        "navigation": 0.2,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 21.6,
+        "models": 39.6,
+        "renderSubmission": 14.7,
+        "total": 65
+      },
+      "p99FrameMs": 41.6,
+      "maxFrameMs": 62.4,
+      "stalledFrames": 1,
+      "durationSeconds": 10.001300000000162,
+      "frames": 1203,
+      "fps": 120.3,
+      "p95FrameMs": 20.8,
+      "drawCalls": 981,
+      "triangles": 3492019,
+      "geometries": 1894,
+      "textures": 250,
+      "at": "2026-10-04T06:46:23.228Z"
+    }
+  ],
+  "benchmarkLimitations": [
+    "Local-machine short-route measurements only; not a whole-map soak test or a benchmark against the reference site.",
+    "Expanded model coverage differs from the previous optimisation round; FPS values must not be presented as an equal-picture before/after comparison.",
+    "Render submission is CPU timing, not measured GPU time.",
+    "Observed fly run includes one frame over 50ms; no zero-stall guarantee."
+  ],
+  "responsiveQa": {
+    "origin": "http://127.0.0.1:4181/responsive-qa.html",
+    "embeddedViewport": {
+      "width": 390,
+      "height": 844
+    },
+    "scope": "HUD layout and option/progress usability in a desktop-browser iframe, not physical mobile-device GPU performance.",
+    "viewportWidth": 390,
+    "scrollWidth": 390,
+    "hudBounds": {
+      "left": 15,
+      "right": 375,
+      "top": 521,
+      "bottom": 733,
+      "width": 360,
+      "height": 212
+    },
+    "selectBounds": {
+      "left": 71,
+      "right": 140.33333587646484,
+      "top": 619.3333740234375,
+      "bottom": 644.0000419616699
+    },
+    "preloadStatusBounds": {
+      "left": 15,
+      "right": 265.7395935058594,
+      "top": 656,
+      "bottom": 682
+    },
+    "observedTransitions": [
+      "stream with 83 cached tiles",
+      "preload 0 / 1143",
+      "preload complete with 683 tiles",
+      "back to stream with 160 cached tiles"
+    ],
+    "finalPreference": "stream",
+    "consoleNotes": [
+      {
+        "level": "error",
+        "message": "Uncaught TypeError: Failed to execute 'observe' on 'MutationObserver': parameter 1 is not of type 'Node'.",
+        "timestamp": "2026-10-04T06:47:40.817Z",
+        "note": "Only observed in the iframe QA tab; no source URL was reported. No MutationObserver is used in project JS/HTML outside vendor/reference assets. Attribution not confirmed; not counted as a clean-console mobile pass."
+      }
+    ]
+  },
+  "checks": {
+    "npmRunVerify": "passed after final source patch",
+    "verifiedPositionFiles": 2476,
+    "verifiedGlbFiles": 318,
+    "verifiedShaAssets": 1057,
+    "artilleryRows": {
+      "cannon": 24,
+      "mortar": 17
+    },
+    "syntax": {
+      "files": 27,
+      "result": "passed"
+    },
+    "targetedCoverage": [
+      "Navigation ranges independent of 12m target",
+      "LOD hysteresis",
+      "Coarse models not displaced by detail upgrades",
+      "Stable instance upload order",
+      "Nearby rear models and forward distant buildings retained",
+      "All fine materials ready before replacement",
+      "All preload resource classes",
+      "Completed preload reuse",
+      "Cancellation",
+      "Partial failures",
+      "Map generation reset",
+      "Existing collision/spatial/cache/navigation regressions"
+    ],
+    "primaryConsoleErrorsSinceReload": 0,
+    "userStatePreserved": {
+      "gun": [
+        77.08999633789062,
+        69.94999694824219
+      ],
+      "target": [
+        97.08999633789062,
+        69.94999694824219
+      ],
+      "presets": [
+        "东向 2000m · 加农炮 L52 Cannon",
+        "东向 340m · 迫击炮 L81 Mortar"
+      ],
+      "benchmarkForward": false,
+      "modelLoading": "preload"
+    }
+  },
+  "limitations": [
+    "Preloading means CPU-side resource residency, not uploading/drawing every highest-detail instance at once.",
+    "Frustum, screen-pixel, distance and draw budgets still defer some candidates, especially distant details.",
+    "First-use GPU upload, shader compilation and terrain detail updates can still stall briefly.",
+    "Switching back to stream stops new preload tasks and restores finite tile caching; previously loaded geometry/texture caches remain until map change or refresh.",
+    "Changing map or refreshing reconstructs in-memory resources; this is not a persistent decoded-GPU cache.",
+    "Memory requirements and performance depend on device; whole-map preload is not the default."
+  ]
+}

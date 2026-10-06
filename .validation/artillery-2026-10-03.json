@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-03",
+  "scope": "Reference-style WARDOGS artillery tool",
+  "reference": "https://metaforge.app/wardogs/map/bakurani/3d",
+  "math": {
+    "cannonFixtures": 24,
+    "mortarRows": 17,
+    "cannon2000": {
+      "bearingDegrees": 90,
+      "bearingMils": 1571,
+      "low": {
+        "mils": 250,
+        "timeSeconds": 12.2
+      },
+      "high": {
+        "mils": 1050,
+        "timeSeconds": 33.1
+      },
+      "terrainCorrectedMils": 262
+    },
+    "mortar340": {
+      "mils": 650,
+      "displayTimeSeconds": 21.3
+    }
+  },
+  "browser": {
+    "desktop": [
+      1080,
+      792
+    ],
+    "mobile": [
+      390,
+      844
+    ],
+    "checked": [
+      "weapon switching",
+      "numeric coordinates",
+      "high/low arcs",
+      "observer Add/Left and commit/reset",
+      "named preset save/reload/restore",
+      "out-of-bounds coordinate handling",
+      "Bakurani/Ozeti preset separation and map restore",
+      "2D range rings and target fit",
+      "3D original GLB readiness for both weapons",
+      "Gun/Target/Sight views",
+      "Fly keyboard pulse moves map focal point",
+      "Walk mode and mobile directional controls",
+      "Esc returns to Orbit",
+      "mobile has no page or panel horizontal overflow"
+    ]
+  },
+  "assets": {
+    "originalWeaponGlbs": 13,
+    "totalBytes": 471632
+  },
+  "limitations": [
+    "No independent in-game live-fire verification",
+    "Trajectory is a reference-style visualization, not guaranteed impact prediction",
+    "8 m local height data; no building or tree trajectory interception",
+    "Sight reticle is not a calibrated in-game optic"
+  ]
+}
+

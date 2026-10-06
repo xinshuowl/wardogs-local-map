@@ -1,0 +1,82 @@
+{
+  "833873520a0b6149.webp": {
+    "replacement": "steel-floor.webp",
+    "sourceSha256": "17861762740a2b06ce86b1c116e4b945a19db9eb6a239e44670dbde193654d1b",
+    "baseSRGB": [
+      150,
+      154,
+      153
+    ],
+    "sourceMean": [
+      0.7375907897949219,
+      0.7388648986816406,
+      0.735015869140625
+    ],
+    "repairedMean": [
+      149.4245262145996,
+      153.39728164672852,
+      152.40359115600586
+    ],
+    "method": "Approximate missing dark base regions; retain bright atlas details and original normal/UV."
+  },
+  "ec54d508479b3b1a.webp": {
+    "replacement": "interior-wood.webp",
+    "sourceSha256": "294b62ffac3e2cd0d5047edc376a00ca383ce96654dfdc3524979f2b92c8b540",
+    "baseSRGB": [
+      144,
+      119,
+      90
+    ],
+    "sourceMean": [
+      7.712551116943359,
+      5.6311492919921875,
+      5.005680084228516
+    ],
+    "repairedMean": [
+      143.55544662475586,
+      118.95429611206055,
+      90.6944580078125
+    ],
+    "method": "Approximate missing dark base regions; retain bright atlas details and original normal/UV."
+  },
+  "f6cefd2b258cf789.webp": {
+    "replacement": "interior-painted-wood.webp",
+    "sourceSha256": "71cf947887a350c45efe2a498d6627ac9c3491c4dc33e7727521e765341c91d9",
+    "baseSRGB": [
+      189,
+      184,
+      172
+    ],
+    "sourceMean": [
+      5.923908233642578,
+      5.465183258056641,
+      4.956729888916016
+    ],
+    "repairedMean": [
+      188.2894287109375,
+      183.05563735961914,
+      170.96702575683594
+    ],
+    "method": "Approximate missing dark base regions; retain bright atlas details and original normal/UV."
+  },
+  "0b28d5b1c7645328.webp": {
+    "replacement": "industrial-girders.webp",
+    "sourceSha256": "09d0b0683dcf7433d4402a1c5e2f04ecb36ee1ccf9939f755664320f76f57bdd",
+    "baseSRGB": [
+      166,
+      169,
+      167
+    ],
+    "sourceMean": [
+      10.713478088378906,
+      10.204414367675781,
+      9.510551452636719
+    ],
+    "repairedMean": [
+      161.93846893310547,
+      164.33314514160156,
+      161.84329986572266
+    ],
+    "method": "Approximate missing dark base regions; retain bright atlas details and original normal/UV."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "provider": "MetaForge",
+  "reference": "https://metaforge.app/wardogs/map",
+  "tileVersion": "20260826",
+  "mapData": [
+    "https://metaforge.app/api/wardogs/map/kavkazi",
+    "https://metaforge.app/api/wardogs/map/europe",
+    "https://metaforge.app/api/wardogs/map/northamerica"
+  ],
+  "note": "Game assets belong to their respective owners. Local, non-commercial reference project."
+}

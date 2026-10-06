@@ -1,0 +1,38 @@
+.mobile-artillery{display:none}
+.sidebar-tool-nav{display:none}
+@media(max-width:900px){.sidebar-tool-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:12px 20px 0;flex:none}.sidebar-tool-nav button{padding:9px 5px;border:1px solid #536641;border-radius:3px;background:#202a1b;color:#dbe7cc;font:inherit;font-size:11px;cursor:pointer}.sidebar-tool-nav button:hover,.sidebar-tool-nav button.active{background:#354528;color:#d5ed79}}
+.terrain-tools{max-height:calc(100% - 168px);overflow:auto;scrollbar-width:thin;scrollbar-color:#60733d transparent}
+.scene-quality{border-top:1px solid #6c7e4740;margin-top:10px;padding-top:9px;font-size:10px;line-height:1.65}
+.scene-quality:not([open]) > :not(summary){display:none}
+.scene-quality summary{cursor:pointer;color:#d5ed79;list-style-position:inside}
+.scene-quality label{display:flex;align-items:center;gap:7px;justify-content:space-between;margin-top:9px}
+.scene-quality input[type=checkbox]{accent-color:#d5ed79;flex:none}
+.scene-quality select,.artillery-panel select,.artillery-panel input{background:#131b11;color:#dde7d2;border:1px solid #536641;border-radius:3px;padding:6px;min-width:0;font:inherit}
+.scene-quality select{max-width:145px}
+#scene-statistics{font-size:9px;color:#a9bd8a;font-variant-numeric:tabular-nums;margin:10px 0;line-height:1.8}
+#benchmark-result{margin:10px 0 0;color:#d5ed79}
+.scene-actions{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.scene-actions button{font-size:10px}
+.model-inspector,.artillery-panel{position:absolute;z-index:9;right:22px;top:66px;width:300px;max-height:calc(100% - 145px);overflow:auto;background:#1c2418f5;border:1px solid #6c7e4766;border-radius:5px;padding:16px;color:#d3dfc1;box-shadow:0 12px 30px #0b120850;scrollbar-width:thin}
+.model-inspector{top:auto;bottom:177px;width:260px}
+.model-inspector .panel-title{gap:8px;margin-bottom:8px}
+.model-inspector strong{font-size:10px;overflow-wrap:anywhere}
+.model-inspector p{font-size:11px;line-height:1.8;font-variant-numeric:tabular-nums}
+.model-inspector>span{display:block;font-size:9px;line-height:1.6;color:#91a47e;margin-bottom:12px}
+.artillery-panel .panel-title{margin-bottom:10px;position:sticky;top:0;z-index:1;background:#1c2418;padding-bottom:8px}
+.artillery-panel h3{font-size:18px;margin:5px 0 0}
+.artillery-warning{font-size:10px;color:#d6b884;line-height:1.8;margin-bottom:12px}
+#artillery-points,#artillery-result{font-size:10px;line-height:1.8;margin:12px 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.artillery-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.artillery-fields label,.artillery-panel form label{display:flex;flex-direction:column;gap:5px;font-size:10px;align-items:stretch;min-width:0}
+.artillery-panel input,.artillery-panel select{width:100%}
+.artillery-arc{margin:10px 0}
+.artillery-submit{width:100%;background:#d5ed79;color:#202915;padding:9px 8px;border:0;border-radius:3px;font-size:11px;cursor:pointer;font-weight:600}
+.artillery-submit:hover{background:#e0f69a}
+#artillery-chart{display:block;width:100%;height:105px;background:#131b11;border:1px solid #4b5b384d;border-radius:3px}
+#artillery-chart[hidden]{display:none}
+.artillery-panel button:focus-visible,.scene-quality summary:focus-visible,.scene-quality select:focus-visible{outline:2px solid #d5ed79;outline-offset:3px}
+.map-viewport[data-tool="artillery"] .terrain-tools,.map-viewport[data-tool="artillery"] .model-inspector{display:none}
+.artillery-panel .scene-quality label{margin-bottom:8px}
+@media(max-width:650px){.mobile-artillery{display:grid;width:26px;height:29px;flex:none}.terrain-tools{max-height:calc(100% - 162px);width:200px}.model-inspector,.artillery-panel{right:12px;width:min(300px,calc(100% - 24px));padding:12px;top:55px;max-height:calc(100% - 126px)}.model-inspector{top:auto;bottom:160px;width:235px}.model-inspector .scene-actions{gap:9px}.scene-quality select{max-width:135px}.scene-quality label{font-size:9px}.artillery-warning{font-size:10px}}
+@media(max-height:620px){.terrain-tools{max-height:calc(100% - 136px)}.model-inspector,.artillery-panel{max-height:calc(100% - 108px)}}

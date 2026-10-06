@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>模型背光材质回归</title>
+<style>body{margin:24px;background:#151b17;color:#eef2e8;font:15px system-ui}p{color:#bdc8bd}table{border-collapse:collapse}th,td{padding:10px;text-align:left;border-bottom:1px solid #3a483b}canvas{display:block;width:180px;height:180px}pre{white-space:pre-wrap}</style>
+<h1>模型背光材质回归</h1>
+<p>使用三图真实贴图与天空，仅保留环境光，比较旧配置和当前配置。数值是中心区域亮度与 GPU 实际环境反射强度，不代表地图帧率。</p>
+<table><thead><tr><th>地图</th><th>篷布：旧配置</th><th>篷布：修复后</th><th>金属：旧配置</th><th>金属：修复后</th></tr></thead><tbody id="samples"></tbody></table>
+<pre id="status">正在验证…</pre>
+<script type="module">
+import * as THREE from '../vendor/three/three.module.js';
+import { PropView } from '../prop-view.js';
+import { TerrainEnvironment } from '../terrain-environment.js';
+const status = document.querySelector('#status');
+const results = [];
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(180, 180); renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(42, 1, .1, 100);
+camera.position.set(0, 0, 3.7);
+const sun = new THREE.DirectionalLight(); const hemisphere = new THREE.HemisphereLight();
+scene.add(sun, hemisphere);
+const terrain = { scene, camera, sun, hemisphere, renderer, metresToWorld: 1, renderProfile: 'balanced', controls: { target: new THREE.Vector3(), getDistance: () => 3.7 }, invalidate() {} };
+terrain.props = new PropView(terrain); terrain.environment = new TerrainEnvironment(terrain);
+const props = terrain.props;
+const read = props.read.bind(props);
+props.read = (url, ...args) => read(url.startsWith('assets/') ? '../' + url : url, ...args);
+const geometry = new THREE.SphereGeometry(1, 48, 32);
+const sample = new THREE.Mesh(geometry); scene.add(sample);
+const context = renderer.getContext();
+function assert(condition, message) { if (!condition) throw new Error(message); }
+function render(material, cell) {
+  sample.material = material; renderer.render(scene, camera);
+  const pixels = new Uint8Array(64 * 64 * 4);
+  context.readPixels(58, 58, 64, 64, context.RGBA, context.UNSIGNED_BYTE, pixels);
+  let luminance = 0;
+  for (let offset = 0; offset < pixels.length; offset += 4) luminance += .2126 * pixels[offset] + .7152 * pixels[offset + 1] + .0722 * pixels[offset + 2];
+  luminance /= pixels.length / 4;
+  const program = renderer.properties.get(material).currentProgram.program;
+  const intensity = context.getUniform(program, context.getUniformLocation(program, 'envMapIntensity'));
+  const canvas = document.createElement('canvas'); canvas.width = canvas.height = 180;
+  canvas.getContext('2d').drawImage(renderer.domElement, 0, 0);
+  cell.append(canvas, document.createTextNode('亮度 ' + luminance.toFixed(1) + ' / 反射 ' + intensity.toFixed(3)));
+  return { luminance: Number(luminance.toFixed(2)), intensity };
+}
+try {
+  const records = await fetch('../assets/scene-manifest.json').then(response => response.json());
+  for (const map of ['bakurani', 'ozeti', 'zestafona']) {
+    terrain.environment.clear(); props.reset();
+    terrain.environment.skyFor(records[map].sky); sun.intensity = 0; scene.fog = null; scene.background = new THREE.Color('#151b17');
+    props.base = '../assets/models/' + map + '/';
+    props.manifest = await fetch(props.base + 'manifest.json').then(response => response.json());
+    const cloth = props.materialFor('MI_MetalStallDesk_Tarp_01b');
+    const metal = props.materialFor('MI_ChurchBells_Metal');
+    await Promise.all([...props.textureJobs.values()]);
+    const deadline = performance.now() + 15000;
+    while (props.texturePending || props.textureUploads.length || props.shaderWarmup.pending) {
+      assert(performance.now() < deadline, '材质准备超时');
+      props.shaderWarmup.update();
+      const upload = props.textureUploads.shift();
+      if (upload) { renderer.initTexture(upload.texture); upload.apply(); }
+      await new Promise(resolve => requestAnimationFrame(resolve));
+    }
+    assert(!props.shaderFailures && !props.textureFailures, '材质准备失败');
+    const row = document.querySelector('#samples').insertRow(); row.insertCell().textContent = map;
+    const result = { map };
+    for (const [name, material] of [['cloth', cloth], ['metal', metal]]) {
+      const legacy = material.clone(); legacy.onBeforeCompile = material.onBeforeCompile; legacy.customProgramCacheKey = material.customProgramCacheKey;
+      legacy.envMap = null; legacy.metalness = .72; legacy.roughness = .46;
+      const before = render(legacy, row.insertCell());
+      const after = render(material, row.insertCell());
+      const expected = (name === 'cloth' ? .4 : .85) * records[map].sky.skyLightIntensity;
+      assert(Math.abs(after.intensity - expected) < 1e-6, map + ': 材质反射强度未进入 GPU');
+      assert(after.luminance > before.luminance * 1.05, map + ': 背光对照未改善');
+      result[name] = { before, after }; legacy.dispose();
+    }
+    assert(renderer.info.programs.every(program => program.diagnostics?.runnable !== false), '着色程序编译失败');
+    results.push(result); status.textContent = JSON.stringify(results, null, 2);
+  }
+  status.dataset.result = 'pass'; status.textContent = 'PASS：三图背光材质与 GPU 环境反射强度\n' + JSON.stringify(results, null, 2);
+} catch (error) {
+  status.dataset.result = 'fail'; status.textContent = 'FAIL：' + error.message + '\n' + JSON.stringify(results, null, 2);
+} finally {
+  terrain.environment.clear(); props.reset(); geometry.dispose(); renderer.dispose();
+}
+</script>
+</html>

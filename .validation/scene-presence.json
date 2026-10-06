@@ -1,0 +1,628 @@
+{
+  "date": "2026-10-04",
+  "request": "3D Map 已显示的模型离开视野后消失，回来时重复出现；必须保留场景实例。",
+  "rootCause": "旧版只缓存位置、几何、贴图和GPU槽位，但每次模型选集仍按距离、视锥、像素阈值和预算移除历史实例，回来需等待选集更新。这与3D场景实例一直存在不同。",
+  "implementation": {
+    "scope": "普通3D Map Orbit及炮兵Fly、Walk共用ModelPresence。",
+    "retention": "本地图已加入选集的实例按位置数据对象和offset去重；未进入当前精细选集的历史实例使用已加载LOD2留在场景。",
+    "lod": "近处精细LOD替换简模，保留原有原子切换，避免双重绘制。关闭图层隐藏实例，再开启恢复。",
+    "rendering": "每帧视锥裁剪只跳过画面外的绘制，不移除场景实例。兼容不透明模型按512游戏米空间区域合批，先剔除整组，再逐实例裁剪。",
+    "lifetime": "切换地图或刷新会清空旧场景。资源重建也仍可释放旧资源。",
+    "performance": "历史简模不再受本次新模型预算淘汰；新模型及近处精细度仍使用原有预算。普通批次保留保守包围球，拾取先检查包围球，导航碰撞只维护附近范围。"
+  },
+  "tests": {
+    "fullVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "durationSeconds": 7.0501,
+      "revision": "最终512米空间分组版本",
+      "includes": "三图2476个位置文件、318个GLB、1057项SHA资源校验；24项加农炮和17项迫击炮射表；备份、SSE、碰撞、导航性能回归。"
+    },
+    "targeted": [
+      "历史10个实例在当前空选集下仍全部保留粗模。",
+      "精细LOD返回没有重复实例，图层关闭后重新开启可恢复。",
+      "真实PropView转身后场景实例2→3；移动到加载范围外10公里时candidates=0，原3个模型仍可绘制。",
+      "相机返回后不执行加载或选集更新，立即射线命中之前的建筑。",
+      "普通Orbit也保留已显示实例；reset清空场景记录。",
+      "Three BatchedMesh真实onBeforeRender在相机转向后立即选中另一个常驻对象，无需sync。",
+      "513个重复实例跨3池，隐藏/恢复复用；一个实例移到x4096后正确换空间池，活动数和驻留数仍513且包围球包含它。",
+      "无multi-draw、透明及大几何回退、分帧、LOD、碰撞、预热、资源缓存回归通过。"
+    ],
+    "browser": {
+      "url": "http://127.0.0.1:4173/",
+      "map": "bakurani",
+      "quality": "balanced",
+      "loading": "preload",
+      "loadedTiles": 683,
+      "reloadAt": "2026-10-04T09:06:33.528Z",
+      "sequence": "先关闭炮兵工具，在普通3D Map模型近景水平拖动300px再反向拖回；随后Walk和Fly分别自动前进10秒并返回；再分别水平转身和转回。最后关闭测试前进选项、关闭炮兵工具，停留在普通3D Map模型近景。",
+      "consoleErrorsAndWarnings": [],
+      "visualResult": "普通3D近景和导航中已有模型留在场景。转向发现新区域会增加实例；后续Walk转向/返回场景数保持57865。",
+      "userData": "未修改炮位77.08999633789062/69.94999694824219、目标97.08999633789062/69.94999694824219；两条炮兵预设和个人数据保持。"
+    }
+  },
+  "observationUnits": {
+    "sceneInstances": "已显示并保留在场景的模型部件实例，不是当前帧可见数量。",
+    "residentInstances": "合批GPU槽位，包含保留的隐藏槽位，不能与场景实例等同。",
+    "triangles": "观测时当前帧绘制的三角形数量。",
+    "note": "转向和移动看到新区域会增加历史实例；这些观测不是严格相同画面的前后性能对照。静态dataset FPS不作为连续导航基准。"
+  },
+  "ordinary3D": [
+    {
+      "stage": "模型近景起点",
+      "sceneInstances": 34809,
+      "seenInstances": 34809,
+      "buildings": 33868,
+      "trees": 499,
+      "props": 442,
+      "lod1": 3568,
+      "lod2": 31241,
+      "triangles": 3558042,
+      "drawCalls": 333,
+      "residentPools": 762,
+      "residentGeometries": 3060,
+      "residentInstances": 46010,
+      "hiddenInstances": 1321,
+      "pending": 0,
+      "textureUploads": 0,
+      "shaderWarmups": 0
+    },
+    {
+      "stage": "水平转向",
+      "sceneInstances": 41696,
+      "seenInstances": 41696,
+      "buildings": 39306,
+      "trees": 1198,
+      "props": 1192,
+      "lod1": 6223,
+      "lod2": 35473,
+      "triangles": 4955951,
+      "drawCalls": 413,
+      "residentPools": 831,
+      "residentGeometries": 3848,
+      "residentInstances": 56932,
+      "hiddenInstances": 3760,
+      "pending": 0,
+      "textureUploads": 0,
+      "shaderWarmups": 0
+    },
+    {
+      "stage": "反向转回",
+      "sceneInstances": 42040,
+      "seenInstances": 42040,
+      "buildings": 39407,
+      "trees": 1341,
+      "props": 1292,
+      "lod1": 5453,
+      "lod2": 36587,
+      "triangles": 5029913,
+      "drawCalls": 411,
+      "residentPools": 859,
+      "residentGeometries": 4121,
+      "residentInstances": 58988,
+      "hiddenInstances": 5233,
+      "pending": 0,
+      "textureUploads": 0,
+      "shaderWarmups": 0
+    }
+  ],
+  "navigationSceneObservations": [
+    {
+      "stage": "Walk基准起点",
+      "sceneInstances": 49280,
+      "residentInstances": 71287
+    },
+    {
+      "stage": "Walk基准结束后",
+      "sceneInstances": 50257,
+      "residentInstances": 73586
+    },
+    {
+      "stage": "Fly基准起点",
+      "sceneInstances": 50257,
+      "residentInstances": 73586
+    },
+    {
+      "stage": "Fly基准结束后",
+      "sceneInstances": 54254,
+      "residentInstances": 81890
+    },
+    {
+      "stage": "Fly转身前",
+      "sceneInstances": 54254,
+      "residentInstances": 81890
+    },
+    {
+      "stage": "Fly转身后",
+      "sceneInstances": 57853,
+      "residentInstances": 85690
+    },
+    {
+      "stage": "Fly转回后",
+      "sceneInstances": 57865,
+      "residentInstances": 87146
+    },
+    {
+      "stage": "Walk转身前",
+      "sceneInstances": 57865,
+      "residentInstances": 87146
+    },
+    {
+      "stage": "Walk转身后",
+      "sceneInstances": 57865,
+      "residentInstances": 87151
+    },
+    {
+      "stage": "Walk转回后",
+      "sceneInstances": 57865,
+      "residentInstances": 87151
+    }
+  ],
+  "finalBenchmarks": [
+    {
+      "map": "bakurani",
+      "mode": "walk",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.338,
+        "cameraAndCollision": 0.047,
+        "terrainDetail": 0.009,
+        "models": 1.408,
+        "renderSubmission": 9.043,
+        "total": 10.87
+      },
+      "cpuMaxMs": {
+        "navigation": 5.5,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 0.1,
+        "models": 4.1,
+        "renderSubmission": 30,
+        "total": 33.5
+      },
+      "p99FrameMs": 27.7,
+      "maxFrameMs": 34.8,
+      "stalledFrames": 0,
+      "durationSeconds": 10.000499999999244,
+      "frames": 856,
+      "fps": 85.6,
+      "p95FrameMs": 20.8,
+      "drawCalls": 480,
+      "triangles": 3851833,
+      "geometries": 1149,
+      "textures": 3358,
+      "longFrames": [
+        {
+          "frame": 1,
+          "costs": {
+            "navigation": 1.4,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 21.7,
+            "total": 26.2
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 72,
+          "costs": {
+            "navigation": 0.4,
+            "cameraAndCollision": 0.2,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 21.9,
+            "total": 25.5
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 84,
+          "costs": {
+            "navigation": 0.4,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 22,
+            "total": 25.5
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 98,
+          "costs": {
+            "navigation": 0.4,
+            "cameraAndCollision": 0.2,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 21.7,
+            "total": 25.4
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 186,
+          "costs": {
+            "navigation": 0.4,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 30,
+            "total": 33.5
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 228,
+          "costs": {
+            "navigation": 0.3,
+            "cameraAndCollision": 0.2,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 25.7,
+            "total": 29.2
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 269,
+          "costs": {
+            "navigation": 0.3,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 22.1,
+            "total": 25.6
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 329,
+          "costs": {
+            "navigation": 0.3,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 22.6,
+            "total": 26.1
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 341,
+          "costs": {
+            "navigation": 0.4,
+            "cameraAndCollision": 0,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 22.3,
+            "total": 25.7
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 354,
+          "costs": {
+            "navigation": 0.3,
+            "cameraAndCollision": 0.2,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 22.7,
+            "total": 26.2
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        }
+      ],
+      "at": "2026-10-04T09:09:14.266Z"
+    },
+    {
+      "map": "bakurani",
+      "mode": "fly",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.022,
+        "cameraAndCollision": 0.064,
+        "terrainDetail": 0.027,
+        "models": 2.799,
+        "renderSubmission": 8.739,
+        "total": 11.675
+      },
+      "cpuMaxMs": {
+        "navigation": 0.2,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 2.7,
+        "models": 4.3,
+        "renderSubmission": 25.3,
+        "total": 29.1
+      },
+      "p99FrameMs": 27.7,
+      "maxFrameMs": 55.5,
+      "stalledFrames": 1,
+      "durationSeconds": 10.00899999999965,
+      "frames": 806,
+      "fps": 80.5,
+      "p95FrameMs": 20.9,
+      "drawCalls": 434,
+      "triangles": 3645003,
+      "geometries": 1279,
+      "textures": 3733,
+      "longFrames": [
+        {
+          "frame": 72,
+          "costs": {
+            "navigation": 0,
+            "cameraAndCollision": 0,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 22.2,
+            "total": 25.2
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 257,
+          "costs": {
+            "navigation": 0,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 25,
+            "total": 28.1
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 5,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 288,
+          "costs": {
+            "navigation": 0,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 4.2,
+            "renderSubmission": 24.7,
+            "total": 29.1
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 381,
+          "costs": {
+            "navigation": 0.1,
+            "cameraAndCollision": 0,
+            "terrainDetail": 0,
+            "models": 1.7,
+            "renderSubmission": 25.3,
+            "total": 27.1
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 398,
+          "costs": {
+            "navigation": 0,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 22.7,
+            "total": 26
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 507,
+          "costs": {
+            "navigation": 0,
+            "cameraAndCollision": 0.2,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 24.8,
+            "total": 28
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 513,
+          "costs": {
+            "navigation": 0,
+            "cameraAndCollision": 0.2,
+            "terrainDetail": 2,
+            "models": 2.5,
+            "renderSubmission": 22.2,
+            "total": 27
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 3,
+            "newGeometries": 8,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 600,
+          "costs": {
+            "navigation": 0.1,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 24.8,
+            "total": 28
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 1,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 778,
+          "costs": {
+            "navigation": 0,
+            "cameraAndCollision": 0.1,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 24.8,
+            "total": 27.9
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 0,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        },
+        {
+          "frame": 792,
+          "costs": {
+            "navigation": 0.1,
+            "cameraAndCollision": 0,
+            "terrainDetail": 0,
+            "models": 3,
+            "renderSubmission": 25.2,
+            "total": 28.3
+          },
+          "resources": {
+            "programs": 36,
+            "newPrograms": 0,
+            "newGeometries": 1,
+            "textureUploads": 0,
+            "shaderWarmups": 0
+          }
+        }
+      ],
+      "at": "2026-10-04T09:12:46.075Z"
+    }
+  ],
+  "intermediateDiagnosis": {
+    "revision": "非最终：仅启用逐实例裁剪，尚未加入512米空间分组。",
+    "mode": "walk",
+    "at": "2026-10-04T09:03:28.313Z",
+    "fps": 62.8,
+    "p95FrameMs": 20.9,
+    "p99FrameMs": 27.8,
+    "maxFrameMs": 34.8,
+    "stalledFrames": 0,
+    "cpuMs": {
+      "models": 1.604,
+      "renderSubmission": 13.043,
+      "total": 15.112
+    },
+    "cpuMaxMs": {
+      "models": 8.1,
+      "renderSubmission": 26,
+      "total": 31.6
+    },
+    "drawCalls": 441,
+    "triangles": 3607207,
+    "geometries": 726,
+    "textures": 2068,
+    "conclusion": "大量历史实例每帧遍历增加渲染CPU成本，因此增加空间组整体剔除。最终Walk测得渲染CPU9.043ms，但两次探索范围与场景数量不同，不构成严格同场景提速比。"
+  },
+  "limitations": [
+    "内存、显存和可见几何负担会随探索增长。最终保留约5.8万场景部件，不等于全图119万实例全部常驻最高精度。",
+    "历史模型用LOD2保底，不保证始终最高精度。首次进入新区域及提升LOD仍可能加载、编译或更新缓冲。",
+    "视锥、相机远裁剪面以及主动关闭图层仍影响画面显示；场景实例保留不等于每帧绘制所有对象。",
+    "最终10秒Fly基准有1帧55.5ms停顿，不能宣称零卡顿。继续转向可显示更多历史几何，帧率也会随画面变化。",
+    "GPU不支持multi-draw的回退有代码回归覆盖，未在另一台无该扩展的真实设备上实测。",
+    "本次最终实机验证为Bakurani；其它地图资源与逻辑回归通过，未逐图进行相同导航实测。"
+  ]
+}

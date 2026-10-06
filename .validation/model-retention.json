@@ -1,0 +1,157 @@
+{
+  "date": "2026-10-04",
+  "request": "加载过的模型在当前地图内一直保留",
+  "behavior": {
+    "positionData": "按需和整图预载都保留已加载区块，取消按需模式192/160区块淘汰。",
+    "geometryAndTextures": "沿用本地图内已有的LOD几何、材质和贴图缓存。",
+    "drawObjects": "离开可见选集时隐藏合批实例，保留GPU实例槽位；相同选集返回时仅恢复可见性，不重复上传矩阵/颜色。",
+    "poolLifetime": "不再按8次闲置周期回收合批池；实例数量缩减时保留隐藏槽位。",
+    "release": "刷新、更换地图、显式需要重建模型资源的画质调整仍会释放旧资源。",
+    "rendering": "视距、LOD、像素阈值、三角形预算和近处碰撞范围保持原规则。",
+    "exceptions": "可见实例选集变化、数量跨越合批阈值、实例容量增长时仍可能重新配置绘制实例；保留几何缓存不保证所有GPU调用都消失。"
+  },
+  "tests": {
+    "fullVerify": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "durationSeconds": 7.4237759
+    },
+    "targeted": [
+      "100个不同几何模型连续20次隐藏/恢复，原合批池、几何对象和实例槽位复用，额外矩阵/颜色上传为0。",
+      "恢复单个模型时同池隐藏邻居不被错误显示；全池隐藏时不绘制。",
+      "实例数量4→1→隐藏→4→0，复用原槽位，活动计数正确。",
+      "实例被实际替换后仍复用原几何池，dispose释放全部合批几何。",
+      "按需模式203个位置区块全部保留；访问已缓存区块不再次读取；切图reset清空。",
+      "原透明材质、无multi-draw回退、LOD切换、碰撞与射表等回归全部通过。"
+    ],
+    "browser": {
+      "map": "bakurani",
+      "quality": "balanced",
+      "loading": "preload",
+      "steps": "炮位近景→Walk落地→水平拖动480px转身→反向拖回，重复一次→Fly前进10秒并返回。",
+      "consoleErrors": [],
+      "consoleWarnings": []
+    }
+  },
+  "observations": [
+    {
+      "stage": "起点",
+      "visibleParts": 8613,
+      "triangles": 3569127,
+      "loadedTiles": 683,
+      "residentPools": 231,
+      "poolAllocations": 231,
+      "residentGeometries": 1444,
+      "residentInstances": 16237,
+      "hiddenInstances": 9061,
+      "drawCalls": 326
+    },
+    {
+      "stage": "第一次转身",
+      "visibleParts": 10396,
+      "triangles": 3626902,
+      "loadedTiles": 683,
+      "residentPools": 251,
+      "poolAllocations": 251,
+      "residentGeometries": 1736,
+      "residentInstances": 19102,
+      "hiddenInstances": 11354,
+      "drawCalls": 320
+    },
+    {
+      "stage": "第一次返回",
+      "visibleParts": 8613,
+      "triangles": 3569127,
+      "loadedTiles": 683,
+      "residentPools": 254,
+      "poolAllocations": 254,
+      "residentGeometries": 1757,
+      "residentInstances": 19674,
+      "hiddenInstances": 12498,
+      "drawCalls": 328
+    },
+    {
+      "stage": "第二次转身",
+      "visibleParts": 10396,
+      "triangles": 3626902,
+      "loadedTiles": 683,
+      "residentPools": 254,
+      "poolAllocations": 254,
+      "residentGeometries": 1759,
+      "residentInstances": 19214,
+      "hiddenInstances": 11466,
+      "drawCalls": 320
+    },
+    {
+      "stage": "第二次返回",
+      "visibleParts": 8613,
+      "triangles": 3569127,
+      "loadedTiles": 683,
+      "residentPools": 254,
+      "poolAllocations": 254,
+      "residentGeometries": 1759,
+      "residentInstances": 19687,
+      "hiddenInstances": 12511,
+      "drawCalls": 328
+    }
+  ],
+  "navigationReport": {
+    "map": "bakurani",
+    "mode": "fly",
+    "moving": true,
+    "quality": "balanced",
+    "cpuMs": {
+      "navigation": 0.015,
+      "cameraAndCollision": 0.068,
+      "terrainDetail": 0.023,
+      "models": 1.932,
+      "renderSubmission": 4.204,
+      "total": 6.26
+    },
+    "cpuMaxMs": {
+      "navigation": 0.2,
+      "cameraAndCollision": 0.7,
+      "terrainDetail": 3.4,
+      "models": 6.7,
+      "renderSubmission": 13.4,
+      "total": 18.4
+    },
+    "p99FrameMs": 14,
+    "maxFrameMs": 41.7,
+    "stalledFrames": 0,
+    "durationSeconds": 10.006,
+    "frames": 1315,
+    "fps": 131.4,
+    "p95FrameMs": 13.9,
+    "drawCalls": 334,
+    "triangles": 3491911,
+    "geometries": 620,
+    "textures": 1315,
+    "longFrames": [],
+    "at": "2026-10-04T08:39:44.108Z"
+  },
+  "limits": [
+    "内存和显存随已探索范围增长；合批内部矩阵/颜色数据纹理计入textures，该数字不是贴图文件数或显存字节数。",
+    "隐藏资源可能让仍活跃的模型分散到更多绘制池；本轮起点326次绘制、往返后328次，上轮未保留实例时该起点305次。相同画面的模型数量和三角形数一致。",
+    "本轮飞行测量在转身验收后执行，缓存状态不同于上轮；131.4FPS仅说明本机该路线可用，不用于证明比上轮更快。",
+    "视野外不绘制，远处仍按LOD与预算显示；持续缓存不等于全地图最高精度一直可见。"
+  ],
+  "delivery": {
+    "map": "bakurani",
+    "mode": "walk",
+    "quality": "balanced",
+    "loading": "preload",
+    "benchmarkForward": false,
+    "gun": [
+      77.08999633789062,
+      69.94999694824219
+    ],
+    "target": [
+      97.08999633789062,
+      69.94999694824219
+    ],
+    "presetsPreserved": 2,
+    "personalMarkers": 0,
+    "server": "http://127.0.0.1:4173/"
+  }
+}

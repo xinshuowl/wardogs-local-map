@@ -1,0 +1,111 @@
+import assert from 'node:assert/strict';
+import * as THREE from '../vendor/three/three.module.js';
+import { PropView } from '../prop-view.js';
+import { MaterialBatches } from '../material-batches.js';
+import { ArtilleryScene } from '../artillery-scene.js';
+
+const terrain = { metresToWorld: 1, scene: new THREE.Scene(), camera: new THREE.PerspectiveCamera(), renderer: { domElement: { dataset: {} }, capabilities: { getMaxAnisotropy: () => 4 } }, invalidate() {}, map: { id: 'test' } };
+const props = new PropView(terrain);
+const order = [];
+let releaseFirst;
+let releaseSecond;
+const first = props.assetQueue.add(() => new Promise(resolve => { releaseFirst = resolve; }));
+const second = props.assetQueue.add(() => new Promise(resolve => { releaseSecond = resolve; }));
+await Promise.resolve();
+const preload = props.assetQueue.add(() => order.push('preload'), -1);
+const position = props.assetQueue.add(() => order.push('position'), 1);
+const fine = props.assetQueue.add(() => order.push('fine'), 2);
+const coarse = props.assetQueue.add(() => order.push('coarse'), 3);
+releaseFirst();
+await Promise.all([first, preload, position, fine, coarse]);
+assert.deepEqual(order, ['coarse', 'fine', 'position', 'preload'], 'Visible geometry must take priority over queued background resources');
+releaseSecond(); await second;
+
+const realBitmap = globalThis.createImageBitmap;
+try {
+  globalThis.createImageBitmap = async () => ({ width: 8, height: 8, close() {} });
+  props.base = 'test/';
+  props.manifest = { maximumTextureSize: 1024, textures: {}, materials: { wall: { baseColor: 'wall.webp', normal: 'normal.webp' } }, meshes: [] };
+  let failNormal = true;
+  const reads = [];
+  props.read = async url => { reads.push(url); if (failNormal && url.endsWith('normal.webp')) throw new Error('Temporary texture failure'); return new ArrayBuffer(4); };
+  props.shaderWarmup = { supported: true, pending: 0, prepare: async () => {}, dispose() {}, deferMaterialDisposal: () => false };
+  const wall = props.materialFor('wall');
+  await Promise.allSettled([...props.textureJobs.values()]);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(wall.visible, true, 'A missing normal map must not hide otherwise usable opaque geometry');
+  assert.equal(props.textureFailures, 1);
+  assert.ok(wall.map);
+  assert.equal(wall.normalMap, null);
+  const retainedTexture = wall.map;
+  const retainedGeometry = new THREE.BoxGeometry();
+  props.prototypes.set(0, [{ geometry: retainedGeometry, material: wall }]);
+  props.presence.count = 37;
+  props.failedTiles.add('missing');
+  props.failedBundles.add('2:1');
+  props.bundleJobs.set('2:1', Promise.resolve());
+  props.completedBundles.add('0:2');
+  const completed = Promise.resolve();
+  props.bundleJobs.set('0:2', completed);
+  failNormal = false;
+  props.retryFailures();
+  await Promise.allSettled([...props.textureJobs.values()]);
+  await new Promise(resolve => setImmediate(resolve));
+  assert.equal(props.textureFailures, 0);
+  assert.equal(props.failedTextureJobs.size, 0);
+  assert.equal(props.failedTiles.size, 0);
+  assert.equal(props.failedBundles.size, 0);
+  assert.equal(props.bundleJobs.has('2:1'), false);
+  assert.equal(props.bundleJobs.get('0:2'), completed);
+  assert.equal(props.prototypes.get(0)[0].geometry, retainedGeometry);
+  assert.equal(props.presence.count, 37, 'Retrying failures must preserve already displayed scene instances');
+  assert.equal(wall.map, retainedTexture);
+  assert.ok(wall.normalMap);
+  assert.equal(reads.filter(url => url.endsWith('wall.webp')).length, 1, 'Successful textures must not be downloaded again');
+  assert.equal(reads.filter(url => url.endsWith('normal.webp')).length, 2);
+} finally {
+  if (realBitmap === undefined) delete globalThis.createImageBitmap;
+  else globalThis.createImageBitmap = realBitmap;
+  props.reset();
+}
+
+const group = new THREE.Group();
+const batcher = new MaterialBatches(group, true);
+const geometry = new THREE.BoxGeometry();
+const material = new THREE.MeshBasicMaterial();
+const proxy = new THREE.InstancedMesh(geometry, material, 1024);
+proxy.userData.perInstanceCulling = true;
+for (let index = 0; index < proxy.count; index++) proxy.setMatrixAt(index, new THREE.Matrix4().makeTranslation(index, 0, -30));
+batcher.sync(proxy);
+let matrixWrites = 0;
+for (const pools of batcher.pools.values()) for (const pool of pools) {
+  const writeMatrix = pool.mesh.setMatrixAt.bind(pool.mesh);
+  pool.mesh.setMatrixAt = (...args) => { matrixWrites++; return writeMatrix(...args); };
+}
+proxy.setMatrixAt(700, new THREE.Matrix4().makeTranslation(700, 12, -30));
+proxy.instanceMatrix.addUpdateRange(700 * 16, 16);
+proxy.instanceMatrix.needsUpdate = true;
+batcher.sync(proxy);
+assert.equal(matrixWrites, 1, 'A one-instance update must not rewrite all 1024 resident GPU slots');
+const updated = batcher.records.get(proxy).instances[700];
+const matrix = new THREE.Matrix4(); updated.pool.mesh.getMatrixAt(updated.id, matrix);
+assert.equal(matrix.elements[13], 12);
+const unchanged = batcher.records.get(proxy).instances[701];
+unchanged.pool.mesh.getMatrixAt(unchanged.id, matrix);
+assert.equal(matrix.elements[13], 0);
+proxy.count = 10; batcher.sync(proxy);
+assert.equal(batcher.stats.visibleInstances, 10);
+proxy.count = 1024; batcher.sync(proxy);
+assert.equal(batcher.stats.visibleInstances, 1024);
+batcher.dispose(); proxy.dispose(); geometry.dispose(); material.dispose();
+const originalFetch = globalThis.fetch;
+try {
+  const scene = Object.create(ArtilleryScene.prototype);
+  let attempts = 0;
+  globalThis.fetch = async () => ({ ok: ++attempts > 1, json: async () => ({ weapons: {} }) });
+  await assert.rejects(scene.loadManifest(), /炮兵模型清单缺失/);
+  assert.deepEqual(await scene.loadManifest(), { weapons: {} });
+  await scene.loadManifest();
+  assert.equal(attempts, 2, 'Artillery model manifests must recover from a transient failure and then reuse the successful cache');
+} finally { globalThis.fetch = originalFetch; }
+console.log('Model loading verified: foreground priority, texture fallback, selective retries, retained instances, partial GPU updates.');

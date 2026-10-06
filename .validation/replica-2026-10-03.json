@@ -1,0 +1,263 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-03",
+  "status": "local-core-acceptance-passed",
+  "reference": "https://metaforge.app/wardogs/map",
+  "project": "F:\\AI\\Map",
+  "applicationVersion": "3.0.0",
+  "scope": "Local WARDOGS map, 3D scene, reference-style game artillery and tactical workspace. Not a claim of pixel-perfect rendering or MetaForge cloud-service equivalence.",
+  "commands": [
+    {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "result": "All three maps, original GLBs/LODs, terrain, artillery fixtures, collision, workspace, share and SSE tests passed."
+    },
+    {
+      "command": "python scripts/verify_updates.py",
+      "exitCode": 0,
+      "tests": 5,
+      "result": "Verified offline staging, version isolation, corrupt-cache repair, unsafe-path rejection and file/directory rollback."
+    },
+    {
+      "command": "node --check",
+      "exitCode": 0,
+      "files": 24,
+      "result": "All root JavaScript/MJS files and scripts MJS passed."
+    }
+  ],
+  "assets": {
+    "maps": [
+      "bakurani",
+      "ozeti",
+      "zestafona"
+    ],
+    "positionFiles": 2476,
+    "originalModelGlbs": 318,
+    "decodedPrimitivesByMap": {
+      "bakurani": 9966,
+      "ozeti": 9375,
+      "zestafona": 9678
+    },
+    "sceneAssetsSha256Verified": 1057,
+    "artilleryOriginalGlbs": 13,
+    "height": {
+      "bakurani": {
+        "baseSampleMetres": 8,
+        "detailSampleMetres": 2,
+        "detailVersion": "4877b976",
+        "detailGrid": [
+          8161,
+          8161
+        ],
+        "detailTiles": 1024
+      },
+      "ozeti": {
+        "baseSampleMetres": 8,
+        "detailSampleMetres": null
+      },
+      "zestafona": {
+        "baseSampleMetres": 8,
+        "detailSampleMetres": null
+      }
+    },
+    "landscapeLayersPerMap": 8
+  },
+  "artillery": {
+    "referenceCannonFixtures": 24,
+    "mortarTableRows": 17,
+    "cannon2000": {
+      "bearingDegrees": 90,
+      "low": {
+        "mils": 250,
+        "timeSeconds": 12.2
+      },
+      "high": {
+        "mils": 1050,
+        "timeSeconds": 33.1
+      },
+      "lowTerrainCorrectedMils": 262,
+      "lowApexMetres": 174
+    },
+    "structureCase": {
+      "gunGameCoordinates": [
+        77.09,
+        69.95
+      ],
+      "targetGameCoordinates": [
+        83.28,
+        72.57
+      ],
+      "rangeMetresRounded": 672,
+      "lowMils": 28,
+      "timeSeconds": 2.8,
+      "apexMetresRounded": 22,
+      "blocked": true,
+      "reason": "object"
+    },
+    "passed": [
+      "Independent dynamic green Sight in 2D and 3D, full-size mode and obstruction warning",
+      "Gun and Target viewbar controls place points rather than silently moving the camera",
+      "Separate gun-model and target close-up controls",
+      "Gun/target dragging, original weapon GLBs and barrel pitch linkage",
+      "Pinned arc, named presets, observer correction and coordinate validation",
+      "Fly, Walk, gravity, jumping, wall blocking/sliding and loaded-geometry roof support"
+    ]
+  },
+  "browser": {
+    "production": {
+      "origin": "http://127.0.0.1:4173",
+      "viewport": {
+        "width": 1280,
+        "height": 720,
+        "scrollWidth": 1280
+      },
+      "map": "bakurani",
+      "dimension": "3d",
+      "view": "gun",
+      "quality": "balanced",
+      "terrainReady": true,
+      "modelsReady": true,
+      "originalArtilleryModelReady": true,
+      "weapon": "l52-cannon",
+      "barrelPitchRadians": 0.2619,
+      "detailSampleMetres": 2,
+      "groundLayers": 8,
+      "skyWorld": "kavkazi",
+      "visibleModelInstances": 4380,
+      "consoleErrors": 0,
+      "consoleWarnings": 0,
+      "existingArtilleryPresetsKept": true,
+      "noQaBackupImported": true
+    },
+    "backupRoundTrip": {
+      "qaOrigins": [
+        "http://127.0.0.1:4176",
+        "http://127.0.0.1:4174"
+      ],
+      "readFrom": "Visible expanded backup JSON textarea in DOM snapshot",
+      "pins": 1,
+      "bookmarks": 1,
+      "mergedDrawings": 5,
+      "filterPresets": 2,
+      "previousDrawingPreserved": true,
+      "importedDrawingPreserved": true,
+      "restoredPreferences": {
+        "grid": false,
+        "labels": false,
+        "zones": false,
+        "brightness": 85,
+        "view": "satellite",
+        "quality": "balanced",
+        "shadows": false,
+        "collision": true,
+        "models": {
+          "buildings": true,
+          "trees": false,
+          "props": false
+        }
+      },
+      "restoredViewState": {
+        "mapId": "bakurani",
+        "dimension": "2d",
+        "heightFactor": 1,
+        "faction": 2,
+        "control": 1
+      },
+      "restoredArtillery": {
+        "weapon": "l52-cannon",
+        "arc": "high",
+        "arcPinned": true,
+        "step": 50,
+        "namedPresetKept": true
+      },
+      "downloadFallback": "Standard download plus visible blob download link, copy button and expandable readonly JSON preview. In-app automatic download/clipboard capture was not treated as a verified file download."
+    },
+    "mobileBackup": {
+      "method": "Real CSS viewport inside a 390x844 iframe, not a physical phone",
+      "viewport": {
+        "width": 390,
+        "height": 844,
+        "scrollWidth": 390
+      },
+      "exportEntryVisibleInSavedPanel": true,
+      "dialog": {
+        "width": 358.79,
+        "left": 15.6,
+        "right": 374.4,
+        "height": 569.31,
+        "clientWidth": 357,
+        "scrollWidth": 357
+      },
+      "expandedJsonCharacters": 3193,
+      "previewVisible": true,
+      "closeReturnsToSavedPanel": true,
+      "horizontalOverflow": false
+    },
+    "priorSameTaskBrowserChecks": [
+      "Ozeti and Zestafona original models, eight ground layers and source sky worlds loaded without console errors",
+      "672m structure case, high/low cannon arcs and original gun model pitch changes",
+      "Space jump from grounded state, falling and landing",
+      "Mobile artillery coordinates and full-size Sight without horizontal overflow",
+      "Six-step Quick Guide, found/hidden locations, marker size and named filters",
+      "Share restored workspace in a separate origin",
+      "Two-page live SSE drawing synchronization"
+    ]
+  },
+  "workspace": {
+    "passed": [
+      "Freehand, circles, lines, rectangles, areas, text and icon drawing",
+      "Shape movement, vertex reshaping, erasing, cancel, undo and redo",
+      "Found/hidden locations, restore, independent area filters and marker size",
+      "Named filters, full share state and merge-safe backup preferences",
+      "Preset capacity rejects before mutation instead of silent truncation",
+      "Local SSE rooms, 409 conflict protection and persisted room data"
+    ]
+  },
+  "server": {
+    "url": "http://127.0.0.1:4173/",
+    "backend": "node",
+    "bind": "127.0.0.1",
+    "pid": 58696,
+    "windowStyle": "Hidden",
+    "healthVersion": "3.0",
+    "capabilities": [
+      "local-rooms",
+      "sse"
+    ],
+    "pageStatus": 200,
+    "roomGetStatus": 200,
+    "privateDirectoryStatuses": {
+      "/.validation/replica-2026-10-03.json": 403,
+      "/.local-data/server-4173.log": 403,
+      "/%2elocal-data/server-4173.log": 403
+    },
+    "qaPortsStopped": [
+      4174,
+      4176
+    ],
+    "qaTabsClosed": true,
+    "productionTabRetained": true
+  },
+  "updateWorkflow": {
+    "publicManifests": 12,
+    "atomicStageAndRollback": true,
+    "versionAndSha256RequiredForCacheReuse": true,
+    "remoteNewVersionApplyPerformed": false
+  },
+  "limitations": [
+    "No MetaForge login, cloud accounts, paid membership or Steam service integration. Local rooms synchronize tactical drawings on this server only.",
+    "No live player or control-zone feed. Source base-map version remains 20260826.",
+    "Only Bakurani has verified 2m public source data; Ozeti and Zestafona use 8m data.",
+    "Three.js landscape/sky implementation is not an exact Unreal Engine renderer or a pixel-perfect copy.",
+    "Trajectory obstruction uses terrain and object bounds; it is not an independent game-engine collision or live-fire verification.",
+    "Sight is a game visualization, not a calibrated in-game optic.",
+    "Walk roof support uses loaded scene geometry. Device performance and WebGL2 availability vary.",
+    "Mobile evidence is iframe-based CSS testing, not all real touch devices. No new V3 long-duration performance benchmark is claimed.",
+    "Resource-update rollback was tested offline; no unverified remote production update was invented."
+  ],
+  "historicalEvidence": [
+    ".validation/artillery-2026-10-03.json",
+    ".validation/performance-v2.json"
+  ],
+  "notes": "Historical limitations and performance results belong to their earlier validation stages; the added 2m detail, object obstruction, landscape and backup behavior are recorded here."
+}

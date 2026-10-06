@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>全量模型材质验收</title>
+<style>body{background:#19201e;color:#eef1e9;font:14px system-ui;margin:20px}p{color:#b6c5ba}#status{white-space:pre-wrap}table{border-collapse:collapse}td,th{padding:8px;border-bottom:1px solid #3e4944;text-align:left}canvas{display:block}details{margin:20px 0}button{padding:8px 18px}#models{display:flex;flex-wrap:wrap;gap:12px}figure{margin:0;background:#26312c;padding:8px}figcaption{max-width:320px}</style>
+<h1>全量模型材质验收</h1>
+<p>三图全部材质逐一真实渲染，保留正常黑色材料。下方对照使用真实 GLB 和 UV；旧图保留此前错误，新图使用修复后的材质和实例朝向。</p>
+<pre id="status">正在准备…</pre>
+<div id="models"></div>
+<details><summary>暗色材质记录（含正常黑色及图集空白，不自动视为故障）</summary><table><thead><tr><th>地图 / 材质</th><th>原图</th><th>修复后</th></tr></thead><tbody id="dark"></tbody></table></details>
+<script type="module">
+import * as THREE from '../vendor/three/three.module.js';
+import { PropView } from '../prop-view.js';
+import { TerrainEnvironment } from '../terrain-environment.js';
+import { resolveModelMaterial } from '../model-materials.js';
+import { mirroredGeometry } from '../model-geometry.js';
+import { GLTFLoader } from '../vendor/three/GLTFLoader.js';
+import { MeshoptDecoder } from '../vendor/three/meshopt_decoder.module.js';
+const status = document.querySelector('#status'); const results = [];
+const renderer = new THREE.WebGLRenderer({ antialias: true }); renderer.setSize(320, 240);
+renderer.outputColorSpace = THREE.SRGBColorSpace; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = .95;
+const scene = new THREE.Scene(); const camera = new THREE.PerspectiveCamera(42, 4 / 3, .01, 10000);
+const sun = new THREE.DirectionalLight(); const hemisphere = new THREE.HemisphereLight(); scene.add(sun, sun.target, hemisphere);
+const terrain = { scene, camera, sun, hemisphere, renderer, metresToWorld: 1, renderProfile: 'balanced', artilleryCameraMode: 'orbit', controls: { target: new THREE.Vector3(), getDistance: () => 4 }, invalidate() {} };
+terrain.props = new PropView(terrain); terrain.environment = new TerrainEnvironment(terrain);
+const props = terrain.props; const read = props.read.bind(props);
+props.read = (url, ...args) => read(url.startsWith('assets/') ? '../' + url : url, ...args);
+const sphere = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 16)); scene.add(sphere);
+const context = renderer.getContext(); let renderFailures = 0;
+renderer.debug.onShaderError = () => renderFailures++;
+function assert(condition, message) { if (!condition) throw new Error(message); }
+function capture(width = 64, height = 64) {
+  renderer.render(scene, camera);
+  const canvas = document.createElement('canvas'); canvas.width = width; canvas.height = height;
+  canvas.getContext('2d').drawImage(renderer.domElement, 0, 0, width, height);
+  const pixels = new Uint8Array(48 * 48 * 4); context.readPixels(136, 96, 48, 48, context.RGBA, context.UNSIGNED_BYTE, pixels);
+  let sum = 0;
+  for (let offset = 0; offset < pixels.length; offset += 4) sum += .2126 * pixels[offset] + .7152 * pixels[offset + 1] + .0722 * pixels[offset + 2];
+  return { canvas, luminance: Number((sum / (48 * 48)).toFixed(2)) };
+}
+async function flush() {
+  const deadline = performance.now() + 120000;
+  while (props.texturePending || props.textureUploads.length || props.shaderWarmup.pending) {
+    assert(performance.now() < deadline, '资源准备超时');
+    props.shaderWarmup.update(); const upload = props.textureUploads.shift();
+    if (upload) { renderer.initTexture(upload.texture); upload.apply(); }
+    await new Promise(resolve => requestAnimationFrame(resolve));
+  }
+  assert(!props.shaderFailures && !props.textureFailures, '材质资源或程序失败');
+}
+function figure(title, captured) {
+  const element = document.createElement('figure'); const caption = document.createElement('figcaption'); caption.textContent = title;
+  element.append(captured.canvas, caption); document.querySelector('#models').append(element);
+}
+function pixels() {
+  const values = new Uint8Array(320 * 240 * 4); context.readPixels(0, 0, 320, 240, context.RGBA, context.UNSIGNED_BYTE, values); return values;
+}
+function difference(expected) {
+  const actual = pixels(); let total = 0;
+  for (let index = 0; index < actual.length; index++) total += Math.abs(actual[index] - expected[index]);
+  return total / actual.length;
+}
+try {
+  const records = await fetch('../assets/scene-manifest.json').then(response => response.json());
+  for (const map of ['bakurani', 'ozeti', 'zestafona']) {
+    status.textContent = map + '：加载全部材质…\n' + JSON.stringify(results, null, 2);
+    terrain.environment.clear(); props.reset(); terrain.map = { id: map };
+    terrain.environment.skyFor(records[map].sky); scene.fog = null; scene.background = new THREE.Color('#28332e');
+    props.base = '../assets/models/' + map + '/'; props.manifest = await fetch(props.base + 'manifest.json').then(response => response.json());
+    props.loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+    const names = Object.keys(props.manifest.materials);
+    for (const name of names) props.materialFor(name);
+    await flush();
+    const legacy = new Map();
+    for (const name of names) {
+      const source = props.manifest.materials[name]; const descriptor = props.materialDescriptors.get(name);
+      if (!/^(dark|empty)-source:/.test(descriptor.replacement || '')) continue;
+      const original = props.materialFor(name).clone(); original.visible = true;
+      original.map = await props.textureFor(source.baseColor, source.repeat, THREE.SRGBColorSpace);
+      renderer.initTexture(original.map);
+      const gain = source.colorGain || 1;
+      original.color.setRGB(...(source.tint || [1, 1, 1])).multiplyScalar(gain);
+      legacy.set(name, original);
+    }
+    camera.position.set(0, 0, 4); camera.lookAt(0, 0, 0); sphere.visible = true;
+    const report = { map, materials: names.length, rendered: 0, repaired: [], dark: [], models: [] };
+    for (const name of names) {
+      sphere.material = props.materialFor(name); const after = capture();
+      report.rendered++;
+      if (legacy.has(name)) {
+        sphere.material = legacy.get(name); const before = capture();
+        report.repaired.push({ name, before: before.luminance, after: after.luminance });
+        const row = document.querySelector('#dark').insertRow(); row.insertCell().textContent = map + ' / ' + name;
+        row.insertCell().append(before.canvas); row.insertCell().append(after.canvas);
+        assert(after.luminance > before.luminance, name + ': 黑底修复无改善');
+      } else if (after.luminance < 18) {
+        report.dark.push({ name, luminance: after.luminance });
+        const row = document.querySelector('#dark').insertRow(); row.insertCell().textContent = map + ' / ' + name;
+        row.insertCell().append(after.canvas); row.insertCell().textContent = '保留源材质';
+      }
+      if (report.rendered % 50 === 0) { status.textContent = map + '：已渲染 ' + report.rendered + ' / ' + names.length; await new Promise(resolve => requestAnimationFrame(resolve)); }
+    }
+    sphere.visible = false;
+    const chosen = ['SM_DoorFrame_Single', 'SM_Ind_Girder_Connection_Angled_01a', 'SM_Skirting_1m', 'SM_TowerFloor02Interior_01floor', 'SM_TowerFloor02Interior_02a', 'SM_CableTray_01', 'SM_Scoreboard_01a', 'SM_Flag_04b', 'SM_TelephonePole_Cable_Banners_40M_01b', 'SM_Flag_Banner_01a', 'SM_Destroyed_Bus_01a'];
+    for (const modelName of chosen) {
+      const entry = Object.entries(props.manifest.meshes).find(([, info]) => info.name === modelName);
+      if (!entry) continue;
+      const [identifier, info] = entry;
+      await props.requestBundle(info.bundle, 0);
+      const parts = props.prototypes.get(identifier + ':0'); assert(parts?.length, '实际模型加载失败');
+      for (const part of parts) part.material = props.materialFor(part.materialName);
+      const box = new THREE.Box3(); for (const part of parts) box.union(part.geometry.boundingBox);
+      const center = box.getCenter(new THREE.Vector3()); const size = box.getSize(new THREE.Vector3());
+      const distance = Math.max(size.x, size.y, size.z) * 1.9;
+      camera.position.copy(center).add(new THREE.Vector3(distance * .4, distance * .7, distance)); camera.lookAt(center);
+      const plain = new THREE.Group();
+      for (const part of parts) {
+        const object = new THREE.Mesh(part.geometry, legacy.get(part.materialName) || part.material); plain.add(object);
+      }
+      scene.add(plain); figure(map + ' / ' + modelName + '：旧材质', capture(320, 240)); scene.remove(plain);
+      for (const [index, object] of plain.children.entries()) object.material = parts[index].material;
+      scene.add(plain); figure(map + ' / ' + modelName + '：修复后', capture(320, 240)); scene.remove(plain);
+      report.models.push(modelName);
+      if (!['SM_DoorFrame_Single', 'SM_Ind_Girder_Connection_Angled_01a'].includes(modelName)) continue;
+      const matrices = [new THREE.Matrix4().makeScale(-1, 1, 1), new THREE.Matrix4()];
+      const mirrorCenter = center.clone(); mirrorCenter.x *= -1;
+      camera.position.copy(mirrorCenter).add(new THREE.Vector3(distance * .4, distance * .25, distance)); camera.lookAt(mirrorCenter);
+      plain.scale.x = -1; scene.add(plain); renderer.render(scene, camera); const expected = pixels(); scene.remove(plain);
+      for (const fixed of [false, true]) {
+        const group = new THREE.Group();
+        for (const part of parts) {
+          const geometry = fixed ? mirroredGeometry(part.geometry) : part.geometry;
+          const object = new THREE.InstancedMesh(geometry, part.material, 1); object.setMatrixAt(0, matrices[Number(fixed)]); group.add(object);
+        }
+        scene.add(group); figure(map + ' / ' + modelName + (fixed ? '：镜像朝向修复后' : '：旧镜像朝向'), capture(320, 240));
+        if (fixed) assert(difference(expected) < .1, modelName + ': 实例化镜像与原生 Mesh 像素不一致');
+        scene.remove(group);
+        for (const object of group.children) { object.dispose(); if (fixed) object.geometry.dispose(); }
+      }
+      const batched = new THREE.Group();
+      for (const part of parts) {
+        const geometry = mirroredGeometry(part.geometry);
+        const object = new THREE.BatchedMesh(1, geometry.attributes.position.count, geometry.index.count, part.material);
+        object.addInstance(object.addGeometry(geometry)); geometry.dispose(); batched.add(object);
+      }
+      scene.add(batched); renderer.render(scene, camera);
+      assert(difference(expected) < .1, modelName + ': 批处理镜像与原生 Mesh 像素不一致');
+      scene.remove(batched); for (const object of batched.children) object.dispose();
+    }
+    for (const material of legacy.values()) material.dispose();
+    results.push(report); status.textContent = JSON.stringify(results, null, 2);
+  }
+  assert(!renderFailures, '存在 GPU 着色错误');
+  status.dataset.result = 'pass'; status.textContent = 'PASS：全部材质渲染和实际模型对照\n' + JSON.stringify(results, null, 2);
+} catch (error) {
+  status.dataset.result = 'fail'; status.textContent = 'FAIL：' + error.message + '\n' + JSON.stringify(results, null, 2);
+} finally {
+  terrain.environment.clear(); props.reset(); sphere.geometry.dispose(); renderer.dispose();
+}
+</script>
+</html>

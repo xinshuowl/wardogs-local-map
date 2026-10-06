@@ -1,0 +1,26 @@
+.steam-online { display: inline-flex; align-items: center; gap: 9px; flex-shrink: 0; color: #b4b1ab; font-size: 14px; font-weight: 600; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.steam-online-dot { width: 10px; height: 10px; flex: none; border-radius: 50%; background: #81867b; }
+.steam-online[data-state="live"] .steam-online-dot { background: #00ce78; }
+.steam-online[data-state="stale"] .steam-online-dot { background: #d5ab60; }
+.steam-player-state { font-size: 10px; font-weight: 400; color: #a6ae9b; }
+.steam-player-state:empty { display: none; }
+@media (max-width: 1150px) {
+  .header-right .local-status { display: none; }
+  .steam-online { font-size: 12px; gap: 7px; }
+}
+@media (min-width: 651px) and (max-width: 900px) {
+  .app-header { gap: 16px; }
+  .top-nav { gap: 16px; }
+  .header-right .profile-badge { display: none; }
+  .steam-player-state { display: none; }
+}
+@media (max-width: 650px) {
+  .app-header { gap: 10px; padding: 0 12px; }
+  .header-right { gap: 8px; }
+  .steam-online { gap: 6px; font-size: 11px; flex-wrap: wrap; justify-content: flex-end; max-width: 170px; }
+  .steam-online-dot { width: 8px; height: 8px; }
+  .steam-player-state { width: 100%; text-align: right; font-size: 9px; line-height: 1; }
+}
+@media (max-width: 360px) {
+  .app-header .brand > span { display: none; }
+}

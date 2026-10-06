@@ -1,0 +1,28 @@
+.qq-group-join { display: inline-flex; align-items: center; justify-content: center; flex: none; gap: 7px; min-height: 34px; padding: 0 12px; border: 1px solid #5c7238; border-radius: 5px; color: #d5ed79; background: #2a351e; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.qq-group-join:hover { color: #ecffc0; border-color: #a5c462; background: #354426; }
+.qq-group-join .icon { width: 17px; height: 17px; }
+.qq-group-dialog { width: 400px; max-width: calc(100vw - 32px); }
+.qq-group-dialog .dialog-heading h2 { font-size: 21px; }
+.qq-group-label { display: block; margin-bottom: 8px; color: #a6b793; font-size: 11px; }
+.qq-group-copy { display: flex; align-items: center; gap: 10px; }
+.qq-group-copy input { flex: 1; min-width: 0; width: 100%; padding: 10px 12px; border: 1px solid #465737; border-radius: 4px; background: #151d10; color: #e2eccc; font-size: 19px; font-variant-numeric: tabular-nums; letter-spacing: 1px; }
+.qq-group-copy .primary-button { height: 44px; }
+.qq-group-feedback { min-height: 38px; padding: 8px 0; color: #c4d998; font-size: 11px; line-height: 1.8; }
+@media (min-width: 651px) and (max-width: 1150px) {
+  .app-header { gap: 12px; }
+  .app-header > .header-divider, .header-right > .header-divider, .header-right .profile-badge { display: none; }
+  .top-nav { gap: 16px; }
+  .header-right { gap: 10px; }
+  .steam-player-state { display: none; }
+}
+@media (min-width: 651px) and (max-width: 850px) {
+  .top-nav .nav-link[data-action="help"] { display: none; }
+}
+@media (max-width: 650px) {
+  :root { --header-height: 76px; }
+  .header-right { display: grid; grid-template-columns: 1fr 32px; gap: 4px 8px; }
+  .header-right .steam-online { grid-column: 1 / -1; justify-self: end; }
+  .header-right .qq-group-join { grid-column: 1; justify-self: end; min-height: 32px; padding: 0 9px; font-size: 11px; }
+  .header-right > .icon-button { grid-column: 2; grid-row: 2; }
+  .settings-panel { top: calc(var(--header-height) + 8px); }
+}

@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><base href="/"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WARDOGS 宣传片制作台</title>
+<style>
+body{margin:0;background:#10140e;color:#e9eedc;font:15px 'Microsoft YaHei',sans-serif}header{padding:16px 24px;display:flex;gap:18px;align-items:center}button,select{background:#d5ed79;color:#19220e;border:0;padding:10px 16px;border-radius:4px;font:inherit;cursor:pointer}button:disabled{opacity:.4}#status{color:#cad2bf}#film{display:block;width:min(100vw,1600px);height:auto;margin:auto}#terrain{position:absolute;left:-2200px;top:0;width:1920px;height:1080px;pointer-events:none}#detail{font:12px monospace;white-space:pre-wrap;padding:16px 24px}
+</style>
+</head><body>
+<header><strong>WARDOGS / 60s · 1080p · 30fps</strong><select id="shot"><option value="3">开场</option><option value="9">三张地图</option><option value="16">三维环绕</option><option value="22.5">飞行</option><option value="27">步行</option><option value="34.5">炮兵</option><option value="43.5">规划</option><option value="50">本地工具</option><option value="56.5">片尾</option></select><button id="preview" disabled>预览镜头</button><button id="render" disabled>导出60秒成片</button><span id="status">正在准备场景…</span></header>
+<canvas id="film" width="1920" height="1080"></canvas><div id="terrain"></div><div id="detail"></div>
+<script src="/map-data.js"></script><script type="module" src="/promotional-video/source/stage.js"></script>
+</body></html>

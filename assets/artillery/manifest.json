@@ -1,0 +1,1032 @@
+{
+  "source": "https://metaforge.app/wardogs/map/bakurani/3d",
+  "cdn": "https://static.metaforge.app/wardogs/base/models",
+  "checkedAt": "2026-10-03",
+  "weapons": {
+    "l81-mortar": [
+      {
+        "url": "SM_Mortar_Bipod.glb"
+      },
+      {
+        "url": "SM_Mortar_Brace.glb"
+      },
+      {
+        "url": "SM_Wooden_Plank_01b.glb",
+        "p": [
+          -1.32073,
+          -0.005073,
+          -1.436631
+        ],
+        "q": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "s": [
+          0.643659,
+          1,
+          0.79991
+        ]
+      },
+      {
+        "url": "SM_Wooden_Plank_01b.glb",
+        "p": [
+          -1.168958,
+          -0.005073,
+          1.092241
+        ],
+        "q": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "s": [
+          0.869117,
+          1,
+          0.79991
+        ]
+      },
+      {
+        "url": "SM_Wooden_Plank_01b.glb",
+        "p": [
+          -1.242364,
+          -0.005073,
+          -0.50927
+        ],
+        "q": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "s": [
+          1,
+          1,
+          0.839163
+        ]
+      },
+      {
+        "url": "SM_Wooden_Plank_01b.glb",
+        "p": [
+          1.026283,
+          -0.005073,
+          -0.50927
+        ],
+        "q": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "s": [
+          1.185887,
+          1,
+          0.839163
+        ]
+      },
+      {
+        "url": "SM_Wooden_Plank_01b.glb",
+        "p": [
+          0.660832,
+          -0.005073,
+          -1.436631
+        ],
+        "q": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "s": [
+          1.316115,
+          1,
+          0.79991
+        ]
+      },
+      {
+        "url": "SM_Mortar_Base.glb"
+      },
+      {
+        "url": "SM_Mortar_Barrel.glb"
+      },
+      {
+        "url": "SM_Mortar_Wood_Base_.glb",
+        "p": [
+          0,
+          0.059332,
+          0
+        ]
+      },
+      {
+        "url": "SM_Mortar_Sandbags.glb",
+        "p": [
+          -1.278205,
+          0.066495,
+          1.148048
+        ]
+      },
+      {
+        "url": "SM_Mortar_Sandbags.glb",
+        "p": [
+          1.506096,
+          0.066495,
+          -1.390874
+        ],
+        "q": [
+          0,
+          -1,
+          0,
+          0
+        ]
+      },
+      {
+        "url": "SM_Mortar_Sandbags.glb",
+        "p": [
+          -1.164974,
+          0.066495,
+          -1.465755
+        ],
+        "q": [
+          0,
+          -0.707107,
+          0,
+          0.707107
+        ],
+        "s": [
+          1,
+          1,
+          1.049959
+        ]
+      },
+      {
+        "url": "SM_Mortar_Sandbags.glb",
+        "p": [
+          1.359871,
+          0.066495,
+          1.261281
+        ],
+        "q": [
+          0,
+          0.707107,
+          0,
+          0.707107
+        ],
+        "s": [
+          1.069057,
+          1,
+          1.031921
+        ]
+      },
+      {
+        "url": "SM_Wooden_Plank_03a.glb",
+        "p": [
+          0.04051,
+          -0.005073,
+          -0.181988
+        ],
+        "q": [
+          0,
+          -1,
+          0,
+          0
+        ],
+        "s": [
+          0.756496,
+          1,
+          0.789163
+        ]
+      },
+      {
+        "url": "SM_Wooden_Plank_03a.glb",
+        "p": [
+          0.022148,
+          -0.005073,
+          0.474157
+        ],
+        "q": [
+          1,
+          0,
+          0,
+          0
+        ],
+        "s": [
+          0.741847,
+          1,
+          0.769784
+        ]
+      },
+      {
+        "url": "SM_Wooden_Plank_03a.glb",
+        "p": [
+          0.022148,
+          -0.005073,
+          0.145792
+        ],
+        "s": [
+          0.741847,
+          1,
+          0.819783
+        ]
+      }
+    ],
+    "l52-cannon": [
+      {
+        "url": "SM_TNK_02_Body.glb"
+      },
+      {
+        "url": "SK_TNK_02.glb"
+      },
+      {
+        "url": "SM_TNK_02_Turret_Spin.glb"
+      },
+      {
+        "url": "SM_TNK_02_Turret_Pitch.glb",
+        "pivot": [
+          0.9684,
+          0.6418,
+          0
+        ]
+      },
+      {
+        "url": "SM_TNK_02_Turret_Barrel.glb",
+        "pivot": [
+          0.9684,
+          0.6418,
+          0
+        ],
+        "p": [
+          2.4726,
+          0.0608,
+          0
+        ]
+      }
+    ]
+  },
+  "resources": {
+    "SK_TNK_02.glb": {
+      "bytes": 167344,
+      "sha256": "3ae9aa94727e715890511493da1d60c4e7d2b383ce5b947d9240871c6a303066"
+    },
+    "SM_Mortar_Barrel.glb": {
+      "bytes": 15740,
+      "sha256": "9f42bd475eabda82c4b1398d545775cc8cb953651f21e0bffe7ce313e1b268ff"
+    },
+    "SM_Mortar_Base.glb": {
+      "bytes": 9804,
+      "sha256": "9fb3c3eb4f75052828c6bb6e7e1eec798075dd6f949456c335281fa30bb31e1d"
+    },
+    "SM_Mortar_Bipod.glb": {
+      "bytes": 29324,
+      "sha256": "0e1462ce013a89c31f51f384115ae9f592b1b051afc50d0c8089da0c4e000cfb"
+    },
+    "SM_Mortar_Brace.glb": {
+      "bytes": 34564,
+      "sha256": "bb852e2f281586b25ede56f79cdfc1785f6073e3a09c91a1020bf29702929ab8"
+    },
+    "SM_Mortar_Sandbags.glb": {
+      "bytes": 39156,
+      "sha256": "546d0e4aa72c804b800f9d3b6bb9164ff6ab6b4590336dcb7e4532cbaca4357f"
+    },
+    "SM_Mortar_Wood_Base_.glb": {
+      "bytes": 22484,
+      "sha256": "1cdccf4eb1200140716e6a5e3c1f987e1baf202eafed81e585508c97a7df4f60"
+    },
+    "SM_TNK_02_Body.glb": {
+      "bytes": 59576,
+      "sha256": "72e83a69ef08832c42dd965fb6b558fedd5f1107380fb3dad99399d04cf47df9"
+    },
+    "SM_TNK_02_Turret_Barrel.glb": {
+      "bytes": 21284,
+      "sha256": "92c4d91a54ea4d39c5599fd94a5a336ab6fee57d878fb93c5d58e25bc318ad0b"
+    },
+    "SM_TNK_02_Turret_Pitch.glb": {
+      "bytes": 16804,
+      "sha256": "4015e58a80700474376a14c0964a8dfa88aa692666015f1cdaaee6a02fd12401"
+    },
+    "SM_TNK_02_Turret_Spin.glb": {
+      "bytes": 49456,
+      "sha256": "fc75b6d3aca606828019c87b59efa0dcfc52aebb2d277fa6067e19c03598ca52"
+    },
+    "SM_Wooden_Plank_01b.glb": {
+      "bytes": 2536,
+      "sha256": "d36119811bdf396c9f8d295925d202885d68b25aa587f5bdce98f618c564dd5b"
+    },
+    "SM_Wooden_Plank_03a.glb": {
+      "bytes": 3560,
+      "sha256": "14d07dfd70d8b5634786895e7541f0ce58573fecf06f3fb67e8cf5b6f7bdefc6"
+    }
+  },
+  "materials": {
+    "MIDirty_Plastic_Crate_vjincafaw": {
+      "color": "#ffffff",
+      "roughness": 1,
+      "metalness": 0
+    },
+    "MI_AK74M_Barrel_3P": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AK74M_Muzzle_3P": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AK74_DustCover": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AK74_DustCover_02": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AK74_Handguard": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AK74_Magazine": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AK74_Receiver": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AK74_Stock": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AKS74_PistolGrip": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_AirRaidShelter_Metal": {
+      "color": "#efefef",
+      "roughness": 0.7,
+      "metalness": 1
+    },
+    "MI_AmmoCrate_01_Clean": {
+      "color": "#b6b16d",
+      "roughness": 0.3,
+      "metalness": 1
+    },
+    "MI_BarbedWire": {
+      "color": "#fafafa",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MI_Battery": {
+      "color": "#7e8286",
+      "roughness": 0.6,
+      "metalness": 1,
+      "derived": false
+    },
+    "MI_Bogie_Locomotive_02a": {
+      "color": "#515151",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Bottles_01a": {
+      "color": "#4a6b55",
+      "roughness": 0.2,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_BremerWall_Buildable": {
+      "color": "#eee7dd",
+      "roughness": 1,
+      "metalness": 0
+    },
+    "MI_BuildToolSupply_01a": {
+      "color": "#636363",
+      "roughness": 0.4,
+      "metalness": 0
+    },
+    "MI_Buildable_Radio_EmissiveScreen": {
+      "color": "#2a2d30",
+      "roughness": 0.25,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_Cement_Bag_01a": {
+      "color": "#8d8d8d",
+      "roughness": 1,
+      "metalness": 0
+    },
+    "MI_Cement_Rubble_rjgmQ_8K": {
+      "color": "#3d3b40",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Chassis_01a_PaintedMetal": {
+      "color": "#363636",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MI_Chassis_Tyres_01a": {
+      "color": "#ababab",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_CompressorUnit01a_Plastic": {
+      "color": "#7b7b7b",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Fixed_Ladder_01": {
+      "color": "#bc9855",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Folding_Step_Ladder_vh2jfjes_8K": {
+      "color": "#a79992",
+      "roughness": 0.652,
+      "metalness": 0
+    },
+    "MI_FuelSupplyCrate_Metal_Canister_01a": {
+      "color": "#647082",
+      "roughness": 0.827394,
+      "metalness": 0
+    },
+    "MI_GlassOpaque_01a": {
+      "color": "#404f3e",
+      "roughness": 0.7,
+      "metalness": 0
+    },
+    "MI_HeavyDrill": {
+      "color": "#7e8286",
+      "roughness": 0.6,
+      "metalness": 1,
+      "derived": false
+    },
+    "MI_Hesco_Barrier_02": {
+      "color": "#958b7f",
+      "roughness": 0.6,
+      "metalness": 1
+    },
+    "MI_Hesco_Barrier_05": {
+      "color": "#c0c0c0",
+      "roughness": 0.6,
+      "metalness": 1
+    },
+    "MI_Hesco_Gate": {
+      "color": "#93a0aa",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_InternalGenerator_BlackPlastic_01a": {
+      "color": "#cecece",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_InternalGenerator_Paint_01a": {
+      "color": "#9e7c35",
+      "roughness": 0.6,
+      "metalness": 1
+    },
+    "MI_LC_Corrugated_Metal_WPO_01a": {
+      "color": "#696a69",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Laptop": {
+      "color": "#2a2d30",
+      "roughness": 0.25,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_LaptopScreenAnimated_01a": {
+      "color": "#2a2d30",
+      "roughness": 0.25,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_MediumDrill": {
+      "color": "#7e8286",
+      "roughness": 0.6,
+      "metalness": 1,
+      "derived": false
+    },
+    "MI_Medium_Crate_Box": {
+      "color": "#555f68",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Medium_Crate_Webbing": {
+      "color": "#2b2b2b",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Military_Table_DarkMetal_01a": {
+      "color": "#b2b2b2",
+      "roughness": 0.9,
+      "metalness": 1
+    },
+    "MI_Military_Table_Plastic_01a": {
+      "color": "#a2a2a2",
+      "roughness": 1,
+      "metalness": 0
+    },
+    "MI_Office_Chair_01a": {
+      "color": "#3d3d3d",
+      "roughness": 0.66,
+      "metalness": 0
+    },
+    "MI_PaperDebris_01a": {
+      "color": "#d8d2c4",
+      "roughness": 0.9,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_Pelicase_desk_01a": {
+      "color": "#4f4f4f",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Pelicase_desk_01b": {
+      "color": "#544633",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Plastic_Crate": {
+      "color": "#fdfdf7",
+      "roughness": 0.6,
+      "metalness": 0
+    },
+    "MI_Radio_01a": {
+      "color": "#d6d6d6",
+      "roughness": 1,
+      "metalness": 1
+    },
+    "MI_RaisedFloor": {
+      "color": "#3d3c3c",
+      "roughness": 0.6,
+      "metalness": 0
+    },
+    "MI_Rope_Coil_vcsoddfs_8K": {
+      "color": "#a8926b",
+      "roughness": 0.9,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_Rubber_01a": {
+      "color": "#2b2b2b",
+      "roughness": 0.9,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_SPW_01_Radar_PaintedMetal": {
+      "color": "#535a7b",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MI_STN_01_Main": {
+      "color": "#393a2f",
+      "roughness": 0.395623,
+      "metalness": 1
+    },
+    "MI_STN_01_Plastics": {
+      "color": "#ff0000",
+      "roughness": 0.934792,
+      "metalness": 0
+    },
+    "MI_STN_01_Rocket": {
+      "color": "#675b46",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_STN_01_Secondary": {
+      "color": "#4a4b42",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_STN_01_TargetingSystem": {
+      "color": "#000000",
+      "roughness": 0.3,
+      "metalness": 0
+    },
+    "MI_STN_02_01": {
+      "color": "#8c9091",
+      "roughness": 0.2,
+      "metalness": 1
+    },
+    "MI_STN_02_02": {
+      "color": "#c2bfb2",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_STN_02_03": {
+      "color": "#363636",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_STN_02_Plastics": {
+      "color": "#ff5b00",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_STN_05": {
+      "color": "#8f8f8f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_SandBag_Barrier_01": {
+      "color": "#a8996f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_SandBag_Barrier_02": {
+      "color": "#a8996f",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_SandBag_Barrier_02a": {
+      "color": "#a8996f",
+      "roughness": 0.9,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_SandBag_Barrier_04a": {
+      "color": "#a8996f",
+      "roughness": 0.7,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_Scaffolding_01": {
+      "color": "#5d5d5d",
+      "roughness": 0.656,
+      "metalness": 0
+    },
+    "MI_Skin_Jungle_Netting_Brown": {
+      "color": "#4a4636",
+      "roughness": 0.85,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_Skin_Jungle_Netting_Green": {
+      "color": "#386700",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Spawnboard_Radar_Base": {
+      "color": "#3b3838",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MI_SpeakerTower_Beams_02a": {
+      "color": "#dad9d0",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MI_Tiling_Plastic": {
+      "color": "#8a8a8a",
+      "roughness": 0.5,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_Tiling_Steel": {
+      "color": "#ffffff",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Tool_Drawers_Wheeled_01a": {
+      "color": "#d6d6d6",
+      "roughness": 0.6,
+      "metalness": 0
+    },
+    "MI_Tool_Drawers_Wheeled_02a": {
+      "color": "#d6d6d6",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Trim_Concrete_Dirty_01": {
+      "color": "#ffffff",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Trim_Exterior_Wood_01": {
+      "color": "#8a6e4b",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_Trim_Industrial_Girders_Clean": {
+      "color": "#7b7e85",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Trim_Industrial_Girders_Clean_HLOD": {
+      "color": "#7b7e85",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Trim_Industrial_Girders_Clean_Metal": {
+      "color": "#f9fdff",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Trim_Industrial_Girders_Rusty": {
+      "color": "#ffffff",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Trim_Industrial_Metal_Rusty_02": {
+      "color": "#7a5340",
+      "roughness": 0.85,
+      "metalness": 0.6,
+      "derived": false
+    },
+    "MI_Trim_Industrial_Painted_Metal_Rusty_02": {
+      "color": "#ffffff",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Trim_Interior_Wood_01": {
+      "color": "#ecfaed",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Tyres": {
+      "color": "#7f6f5b",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MI_Wood_Riverside_01a": {
+      "color": "#e1e1e1",
+      "roughness": 0.428,
+      "metalness": 0
+    },
+    "MLI_BuildableDoor_01a": {
+      "color": "#636952",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_Buildable_Radio": {
+      "color": "#272727",
+      "roughness": 0.5,
+      "metalness": 0
+    },
+    "MLI_CamoNetTent_01": {
+      "color": "#595959",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_FOB_Crate_01a": {
+      "color": "#535569",
+      "roughness": 0.6,
+      "metalness": 0
+    },
+    "MLI_FOB_Crate_01b": {
+      "color": "#565656",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_FOB_Crate_02a": {
+      "color": "#6c6c6c",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_FOB_Crate_02b": {
+      "color": "#d19c7a",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_FOB_Crate_06a": {
+      "color": "#fdfdfd",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_FOB_Crate_06b": {
+      "color": "#70756b",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_FOB_FlagTower_01a": {
+      "color": "#b0b0b0",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_Mortar_01b": {
+      "color": "#323536",
+      "roughness": 0.6,
+      "metalness": 1
+    },
+    "MLI_Mortar_02a": {
+      "color": "#3e4731",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_Mortar_03a": {
+      "color": "#ffdba7",
+      "roughness": 0.6,
+      "metalness": 1
+    },
+    "MLI_RepairStation_01a": {
+      "color": "#fdfcfc",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_00a": {
+      "color": "#4a4a4a",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_01": {
+      "color": "#7c7e97",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_01a": {
+      "color": "#8ba0c5",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_01b": {
+      "color": "#5d6067",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_01c": {
+      "color": "#8ba0c5",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_01d": {
+      "color": "#8ba0c5",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_01g": {
+      "color": "#49505d",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_01h": {
+      "color": "#414a54",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_02": {
+      "color": "#58595d",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_02b": {
+      "color": "#e5e5e5",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_02c": {
+      "color": "#5d5142",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_02d": {
+      "color": "#e5e5e5",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_02g": {
+      "color": "#e5e5e5",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_02h": {
+      "color": "#e7e7e7",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_03b": {
+      "color": "#8b8b8e",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_03h": {
+      "color": "#56451d",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_04": {
+      "color": "#49494c",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_04h": {
+      "color": "#757575",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_05": {
+      "color": "#e5e5e5",
+      "roughness": 0.8,
+      "metalness": 1
+    },
+    "MLI_SpawnBoard_LoneStar_06": {
+      "color": "#41403f",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_SpawnBoard_LoneStar_07": {
+      "color": "#988538",
+      "roughness": 0.8,
+      "metalness": 0
+    },
+    "MLI_TankTrap_01a": {
+      "color": "#414141",
+      "roughness": 0.7,
+      "metalness": 0
+    },
+    "MM_BasicBlack": {
+      "color": "#1a1a1a",
+      "roughness": 0.7,
+      "metalness": 0,
+      "derived": false
+    },
+    "M_LaptopScreenAnimated": {
+      "color": "#2a2d30",
+      "roughness": 0.25,
+      "metalness": 0,
+      "derived": false
+    },
+    "Mi_Trim_Industrial_Walkway": {
+      "color": "#7e8286",
+      "roughness": 0.6,
+      "metalness": 1,
+      "derived": false
+    },
+    "MI_BlackUnlit": {
+      "color": "#1a1a1a",
+      "roughness": 0.7,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_TRK_001": {
+      "color": "#3e3c35",
+      "roughness": 1,
+      "metalness": 1
+    },
+    "MI_TNK_02_Ext_Glass": {
+      "color": "#aaaaaa",
+      "roughness": 0.4,
+      "metalness": 1,
+      "derived": false
+    },
+    "MI_TNK_02_Ext_MetalPaint_01": {
+      "color": "#484a45",
+      "roughness": 1,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_TNK_02_Ext_MetalPaint_02": {
+      "color": "#3f443e",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_TNK_02_Ext_MetalPaint_03": {
+      "color": "#3f403d",
+      "roughness": 0.8,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_TNK_02_Ext_MetalPaint_04": {
+      "color": "#44403c",
+      "roughness": 1,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_TNK_02_Ext_Rubber": {
+      "color": "#222222",
+      "roughness": 0.919798,
+      "metalness": 0,
+      "derived": false
+    },
+    "MI_TNK_Gunner_Hatch": {
+      "color": "#3e3c35",
+      "roughness": 0.688378,
+      "metalness": 1,
+      "derived": false
+    }
+  }
+}

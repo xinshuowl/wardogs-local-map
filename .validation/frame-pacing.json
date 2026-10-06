@@ -1,0 +1,405 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-04",
+  "scope": "炮兵 Fly / Walk 导航的模型、地形、GPU 提交和资源生命周期优化",
+  "environment": {
+    "url": "http://127.0.0.1:4173/",
+    "browser": "Codex in-app browser",
+    "viewportPixels": [
+      1080,
+      792
+    ],
+    "engine": "Three.js r180",
+    "quality": "balanced",
+    "loading": "preload",
+    "multiDraw": true,
+    "gpuModel": "未采集"
+  },
+  "method": {
+    "route": "Bakurani 炮位模型近景 → Walk 落地 → UI 测量导航 10 秒（前进并返回）→ Fly → 同样测量 10 秒",
+    "gun": [
+      77.08999633789062,
+      69.94999694824219
+    ],
+    "target": [
+      97.08999633789062,
+      69.94999694824219
+    ],
+    "warmState": "测量前等待整图 CPU 资源缓存、贴图上传、模型/地形任务结束；最终版本另等待着色程序预热队列结束。",
+    "baseline": "本轮在修改前重新加载原代码并实测，非引用更早轮次的不同路线。",
+    "metrics": "FPS/P95/P99/max 来自 RAF 帧间隔；cpuMs/cpuMaxMs 来自应用内分阶段计时。drawCalls/triangles 为报告结束时的场景状态。",
+    "longFrames": "最终版本记录 CPU total >25ms 的帧，最多32条；空数组不表示 RAF 一定没有长帧。",
+    "referenceComparison": "核对了参考站的分块、LOD、剔除、分帧与资源预热机制；没有参考站同路线 FPS 对照。",
+    "repetitions": "保留全部本轮前后测量及中间诊断报告；不是多次统计平均，不代表所有路线、显卡或冷启动时延。"
+  },
+  "changes": [
+    "模型选择、稳定排序、批次准备按约3ms协作预算分帧，每帧限制新增部件和实例缓冲上传；保留原视距和三角形预算。",
+    "同一原型的LOD一起提交，准备期间保留已有模型；共享实例矩阵/颜色，只上传变化区间。",
+    "精细地形顶点、索引、法线按约2ms分片；新块准备完成后替换旧块和粗地形覆盖。",
+    "WEBGL_multi_draw可用时同材质小批模型合批；透明材质和重复较多模型保留InstancedMesh，不支持扩展时自动回退。",
+    "静态模型停止重复更新世界矩阵，支撑碰撞三角网格限制在相机144m加模型半径内并复用对象；完整可见拾取与源OBB墙体碰撞保留。",
+    "贴图逐项上传，InstancedMesh和BatchedMesh程序按材质特征顺序异步预热，准备完成后显示。",
+    "切图取消待处理任务；运行中的compileAsync结束前延迟释放其材质和预热几何。",
+    "加载提示区分整图资源已缓存和画面仍在准备，报告新增长帧资源变化诊断。"
+  ],
+  "sceneEquivalence": {
+    "baseline": {
+      "modelInstances": 8613,
+      "buildings": 6857,
+      "trees": 470,
+      "props": 1286,
+      "lod1": 4159,
+      "lod2": 4454,
+      "triangles": 3569127,
+      "drawCalls": 1080,
+      "collisionMeshes": 8225
+    },
+    "final": {
+      "modelInstances": 8613,
+      "buildings": 6857,
+      "trees": 470,
+      "props": 1286,
+      "lod1": 4159,
+      "lod2": 4454,
+      "triangles": 3569127,
+      "drawCalls": 305,
+      "collisionMeshes": 1715,
+      "shaderPrograms": 39
+    },
+    "rangesMetres": {
+      "buildings": 1200,
+      "trees": 550,
+      "props": 280
+    },
+    "finalReadiness": {
+      "modelPreload": "ready",
+      "modelPreloadCompleted": 1143,
+      "modelPreloadTotal": 1143,
+      "modelTiles": 683,
+      "modelWorkPending": 0,
+      "detailWorkPending": 0,
+      "modelTextureUploads": 0,
+      "modelShaderWarmups": 0
+    },
+    "walk": {
+      "feet": -943.16,
+      "grounded": true
+    },
+    "visual": "最终页面截图人工核对，建筑、树木、炮兵模型与原近景一致。相同起点模型数量、LOD构成和三角形数相同。",
+    "drawingReductionPercent": 71.8
+  },
+  "before": {
+    "walk": {
+      "map": "bakurani",
+      "mode": "walk",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.33,
+        "cameraAndCollision": 0.05,
+        "terrainDetail": 0.007,
+        "models": 1.201,
+        "renderSubmission": 6.228,
+        "total": 7.832
+      },
+      "cpuMaxMs": {
+        "navigation": 2.5,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 0.1,
+        "models": 41.4,
+        "renderSubmission": 13,
+        "total": 51.1
+      },
+      "p99FrameMs": 48.6,
+      "maxFrameMs": 55.6,
+      "stalledFrames": 1,
+      "durationSeconds": 10.001100000000559,
+      "frames": 1153,
+      "fps": 115.3,
+      "p95FrameMs": 13.9,
+      "drawCalls": 1113,
+      "triangles": 3548458,
+      "geometries": 1654,
+      "textures": 224,
+      "at": "2026-10-04T07:31:45.627Z"
+    },
+    "fly": {
+      "map": "bakurani",
+      "mode": "fly",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.026,
+        "cameraAndCollision": 0.078,
+        "terrainDetail": 0.048,
+        "models": 2.471,
+        "renderSubmission": 6.388,
+        "total": 9.03
+      },
+      "cpuMaxMs": {
+        "navigation": 0.2,
+        "cameraAndCollision": 0.4,
+        "terrainDetail": 21.1,
+        "models": 44.3,
+        "renderSubmission": 24.2,
+        "total": 57.8
+      },
+      "p99FrameMs": 48.7,
+      "maxFrameMs": 76.4,
+      "stalledFrames": 7,
+      "durationSeconds": 10.006600000000748,
+      "frames": 992,
+      "fps": 99.1,
+      "p95FrameMs": 41.6,
+      "drawCalls": 973,
+      "triangles": 3492014,
+      "geometries": 2057,
+      "textures": 252,
+      "at": "2026-10-04T07:32:15.526Z"
+    }
+  },
+  "intermediate": {
+    "implementation": "已分帧和合批，尚未加入ShaderWarmup。首次Fly提交80.9ms，随后同路线复测无长帧，推动继续实现预热；这些不是最终版本验收结果。",
+    "walk": {
+      "map": "bakurani",
+      "mode": "walk",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.328,
+        "cameraAndCollision": 0.046,
+        "terrainDetail": 0.011,
+        "models": 0.967,
+        "renderSubmission": 3.459,
+        "total": 4.826
+      },
+      "cpuMaxMs": {
+        "navigation": 2.3,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 0.1,
+        "models": 3.8,
+        "renderSubmission": 6.6,
+        "total": 10.8
+      },
+      "p99FrameMs": 13.9,
+      "maxFrameMs": 20.9,
+      "stalledFrames": 0,
+      "durationSeconds": 10.006699999999254,
+      "frames": 1420,
+      "fps": 141.9,
+      "p95FrameMs": 7.1,
+      "drawCalls": 308,
+      "triangles": 3548468,
+      "geometries": 405,
+      "textures": 940,
+      "at": "2026-10-04T07:51:44.055Z"
+    },
+    "firstFly": {
+      "map": "bakurani",
+      "mode": "fly",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.024,
+        "cameraAndCollision": 0.071,
+        "terrainDetail": 0.024,
+        "models": 1.821,
+        "renderSubmission": 3.827,
+        "total": 5.783
+      },
+      "cpuMaxMs": {
+        "navigation": 0.2,
+        "cameraAndCollision": 1.2,
+        "terrainDetail": 2.6,
+        "models": 5.9,
+        "renderSubmission": 80.9,
+        "total": 84.1
+      },
+      "p99FrameMs": 14,
+      "maxFrameMs": 83.4,
+      "stalledFrames": 1,
+      "durationSeconds": 10.0055,
+      "frames": 1364,
+      "fps": 136.3,
+      "p95FrameMs": 7.1,
+      "drawCalls": 308,
+      "triangles": 3493415,
+      "geometries": 420,
+      "textures": 949,
+      "at": "2026-10-04T07:52:32.247Z"
+    },
+    "warmFly": {
+      "map": "bakurani",
+      "mode": "fly",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.026,
+        "cameraAndCollision": 0.071,
+        "terrainDetail": 0.013,
+        "models": 1.748,
+        "renderSubmission": 3.859,
+        "total": 5.738
+      },
+      "cpuMaxMs": {
+        "navigation": 0.2,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 2.1,
+        "models": 5.9,
+        "renderSubmission": 8.5,
+        "total": 11.7
+      },
+      "p99FrameMs": 13.9,
+      "maxFrameMs": 14,
+      "stalledFrames": 0,
+      "durationSeconds": 10.00539999999886,
+      "frames": 1381,
+      "fps": 138,
+      "p95FrameMs": 7.1,
+      "drawCalls": 310,
+      "triangles": 3491907,
+      "geometries": 429,
+      "textures": 952,
+      "at": "2026-10-04T07:56:08.482Z"
+    }
+  },
+  "final": {
+    "walk": {
+      "map": "bakurani",
+      "mode": "walk",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.372,
+        "cameraAndCollision": 0.048,
+        "terrainDetail": 0.014,
+        "models": 1.121,
+        "renderSubmission": 3.788,
+        "total": 5.361
+      },
+      "cpuMaxMs": {
+        "navigation": 2.3,
+        "cameraAndCollision": 0.3,
+        "terrainDetail": 0.1,
+        "models": 3.9,
+        "renderSubmission": 10.3,
+        "total": 14.2
+      },
+      "p99FrameMs": 13.9,
+      "maxFrameMs": 14,
+      "stalledFrames": 0,
+      "durationSeconds": 10.004400000000002,
+      "frames": 1373,
+      "fps": 137.2,
+      "p95FrameMs": 7.1,
+      "drawCalls": 307,
+      "triangles": 3548468,
+      "geometries": 452,
+      "textures": 940,
+      "longFrames": [],
+      "at": "2026-10-04T08:18:39.033Z"
+    },
+    "fly": {
+      "map": "bakurani",
+      "mode": "fly",
+      "moving": true,
+      "quality": "balanced",
+      "cpuMs": {
+        "navigation": 0.024,
+        "cameraAndCollision": 0.068,
+        "terrainDetail": 0.022,
+        "models": 1.947,
+        "renderSubmission": 4.109,
+        "total": 6.187
+      },
+      "cpuMaxMs": {
+        "navigation": 0.2,
+        "cameraAndCollision": 0.4,
+        "terrainDetail": 3,
+        "models": 4.6,
+        "renderSubmission": 13,
+        "total": 18
+      },
+      "p99FrameMs": 14,
+      "maxFrameMs": 55.6,
+      "stalledFrames": 1,
+      "durationSeconds": 10.005599999998886,
+      "frames": 1330,
+      "fps": 132.9,
+      "p95FrameMs": 13.9,
+      "drawCalls": 307,
+      "triangles": 3492014,
+      "geometries": 464,
+      "textures": 943,
+      "longFrames": [],
+      "at": "2026-10-04T08:19:13.537Z"
+    }
+  },
+  "regression": {
+    "automated": {
+      "command": "npm run verify",
+      "exitCode": 0,
+      "durationSeconds": 7.8916,
+      "positionFiles": 2476,
+      "geometryFiles": 318,
+      "sha256Assets": 1057,
+      "cannonFixtures": 24,
+      "mortarTableRows": 17,
+      "syntax": "根目录和scripts内JS/MJS全部通过node --check",
+      "newCoverage": [
+        "协作分帧预算",
+        "稳定排序与法线数值",
+        "LOD原子提交",
+        "地形完成后替换与取消",
+        "合批矩阵/颜色及资源释放",
+        "透明材质/无扩展回退",
+        "着色预热与取消及运行中延迟释放"
+      ]
+    },
+    "browser": {
+      "twoDThreeDSwitch": "通过",
+      "flyWalkOrbit": "通过",
+      "dragLookAndEscape": "通过",
+      "mapSwitchWhileLoading": "Ozeti 980/1371、modelPending=2、modelWorkPending=1时开始切至Zestafona，随后恢复Bakurani，无新增警告或错误。此步骤未证明恰好中断了运行中的compileAsync；该细粒度竞争由单元测试覆盖。",
+      "ozeti": {
+        "mode": "walk",
+        "modelInstances": 8883,
+        "modelPreload": "loading",
+        "grounded": true
+      },
+      "zestafona": {
+        "mode": "fly",
+        "modelInstances": 7531,
+        "modelPreload": "ready",
+        "modelWorkPending": 0,
+        "modelShaderWarmups": 0,
+        "modelTextureUploads": 0,
+        "detailWorkPending": 0,
+        "drawCalls": 342
+      },
+      "consoleErrors": [],
+      "consoleWarnings": []
+    },
+    "userData": {
+      "personalMarkers": 0,
+      "presets": [
+        "东向 2000m · 加农炮 L52 Cannon",
+        "东向 340m · 迫击炮 L81 Mortar"
+      ],
+      "gunAndTargetUnchanged": true,
+      "finalMap": "bakurani",
+      "finalMode": "walk",
+      "finalQuality": "balanced",
+      "finalLoading": "preload",
+      "benchmarkForward": false
+    }
+  },
+  "limitations": [
+    "最终Fly仍出现一次55.6ms RAF间隔；应用内CPU峰值18ms、渲染提交峰值13ms，没有CPU>25ms长帧。现有测量不能确定该停顿来自GPU、浏览器调度还是其他未计时阶段，不宣称零卡顿。",
+    "合批缓冲和着色预热增加GPU资源与启动准备工作；报告textures包含合批矩阵/颜色等数据纹理，不是独立图片文件数，也不是显存字节数。",
+    "每帧预算为协作式，单个几何复制、贴图上传或驱动调用仍可能超预算。",
+    "整图预载缓存资源，绘制仍使用可见范围和LOD，不等于全图最高精度同时绘制。尚未完成LOD替换时保持旧层级。",
+    "未支持WEBGL_multi_draw的设备保留实例化；回退代码已测试，但没有另一台真实GPU的现场帧率数据。",
+    "保留4173正式服务；未创建额外QA服务器，未修改用户炮位、目标、预设或标记。"
+  ]
+}
